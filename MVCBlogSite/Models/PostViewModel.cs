@@ -14,6 +14,6 @@ namespace MVCBlogSite.Models
 
         // Relational Properties
         public UserViewModel UserViewModel { get; set; }
-        public List<ComplainViewModel> ComplainViewModels { get; set; }
+        public List<ComplainViewModel>? ComplainViewModels { get; set; }
     }
 }

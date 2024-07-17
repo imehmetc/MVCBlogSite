@@ -1,8 +1,25 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using DAL.Data
+@model List<PostViewModel>
+@inject AppDbContext _context;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="..." class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Content</p>
+                        <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
+                        <p class="card-text">@item.Likes</p>
+                        <p class="card-text">@_context.Users.FirstOrDefault(x => x.Id == item.UserId).UserName</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

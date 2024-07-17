@@ -1,0 +1,18 @@
+﻿<div class="container mt-5">
+    <form class="form" asp-controller="Account" asp-action="Login" method="POST">
+        <div class="form-group">
+            <label for="UserName">User Name:</label>
+            <input type="text" name="userName" class="form-control" id="UserName" placeholder="User Name.." required /> <!-- action'un içinde yakalanabilmesi için name="" attribute'leri verilmeli-->
+        </div>
+        <div class="form-group">
+            <label for="Password">Password:</label>
+            <input type="password" name="password" class="form-control" id="Password" placeholder="Password.." required />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-primary btn-block" />
+        </div>
+    </form>
+    <div class="text-center mt-3">
+        <a class="btn btn-success" asp-controller="Account" asp-action="Register">Register Form</a>
+    </div>
+</div>

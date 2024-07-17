@@ -1,0 +1,32 @@
+﻿@model UserViewModel
+
+<div class="container mt-5">
+    <form class="form" asp-controller="Account" asp-action="Register" method="POST">
+        <div class="form-group">
+            <label for="FirstName">First Name:</label>
+            <input asp-for="FirstName" type="text" class="form-control" id="FirstName" placeholder="First Name.." required />
+        </div>
+        <div class="form-group">
+            <label for="LastName">Last Name:</label>
+            <input asp-for="LastName" type="text" class="form-control" id="LastName" placeholder="Last Name.." required />
+        </div>
+
+        <div class="form-group">
+            <label for="BirthDate">Birth Date:</label>
+            <input asp-for="BirthDate" type="date" class="form-control" id="BirthDate" required />
+        </div>
+
+        <div class="form-group">
+            <label for="UserName">User Name:</label>
+            <input asp-for="UserName" type="text" class="form-control" id="UserName" placeholder="User Name.." required />
+        </div>
+        <div class="form-group">
+            <label for="Password">Password:</label>
+            <input asp-for="Password" type="password" class="form-control" id="Password" placeholder="Password.." required />
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Register" class="btn btn-success btn-block" />
+        </div>
+    </form>
+</div>

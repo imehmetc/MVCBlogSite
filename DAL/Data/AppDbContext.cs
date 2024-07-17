@@ -20,5 +20,14 @@ namespace DAL.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Complain> Complains { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>().HasMany(x => x.Posts).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict); // OnDelete(DeleteBehavior.Restrict) -> User silindiğinde bağlı olduğu Post'lar silinmesin
+            modelBuilder.Entity<User>().HasMany(x => x.Complains).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Post>().HasMany(x => x.Complains).WithOne(x => x.Post).HasForeignKey(x => x.PostId).OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
