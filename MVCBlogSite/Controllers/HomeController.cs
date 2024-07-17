@@ -1,6 +1,7 @@
 using AutoMapper;
 using BLL.AbstractServices;
 using BLL.Dtos;
+using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MVCBlogSite.Models;
 using System.Diagnostics;
@@ -22,6 +23,16 @@ namespace MVCBlogSite.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var role = HttpContext.Session.GetString("IsAdmin");
+            
+            if (role == "True")
+            {
+                var unApprovedPosts = await _postService.GettAllUnApprovedPosts();
+                var allMappedPost = _mapper.Map<List<PostViewModel>>(unApprovedPosts);
+
+                return View(allMappedPost);
+            }
+
             var posts = await _postService.GetAllPosts();
             var mappedPost = _mapper.Map<List<PostViewModel>>(posts);
 
@@ -49,6 +60,50 @@ namespace MVCBlogSite.Controllers
             return RedirectToAction("Index", "Home");
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int postId)
+        {
+            await _postService.DeletePost(postId);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Approve(int postId)
+        {
+            await _postService.ApprovePost(postId);
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetApprovalPendingPosts()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var postDtos = await _postService.GettAllUnApprovedPosts();
+            postDtos = postDtos.Where(x => x.UserId == userId && !x.IsApproved).ToList();
+            var mappedPosts = _mapper.Map<List<PostViewModel>>(postDtos);
+            
+            return View(mappedPosts);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Like(int postId)
+        {
+            await _postService.LikePost(postId);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

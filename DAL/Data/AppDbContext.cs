@@ -28,6 +28,12 @@ namespace DAL.Data
             modelBuilder.Entity<User>().HasMany(x => x.Posts).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict); // OnDelete(DeleteBehavior.Restrict) -> User silindiğinde bağlı olduğu Post'lar silinmesin
             modelBuilder.Entity<User>().HasMany(x => x.Complains).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Post>().HasMany(x => x.Complains).WithOne(x => x.Post).HasForeignKey(x => x.PostId).OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<User>().HasData(
+                    new User { Id = 10, FirstName = "Ali", LastName = "Veli", BirthDate = DateTime.Now, UserName = "admin", Password = "123", IsAdmin = true, CreatedDate = DateTime.Now }
+
+                );
         }
     }
 }

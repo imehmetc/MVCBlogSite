@@ -21,9 +21,11 @@ namespace BLL.ConcreteServices
             _postRepository = postRepository;
             _mapper = mapper;
         }
-        public Task ApprovePost(int postId)
+        public async Task ApprovePost(int postId)
         {
-            throw new NotImplementedException();
+            var postToBeApproved = await _postRepository.GetByIdAsync(postId);
+            postToBeApproved.IsApproved = true;
+            await _postRepository.UpdateAsync(postToBeApproved);
         }
 
         public async Task CreatePost(PostDto postDto)
@@ -32,25 +34,32 @@ namespace BLL.ConcreteServices
             await _postRepository.AddAsync(post);
         }
 
-        public Task DeletePost(int postId)
+        public async Task DeletePost(int postId)
         {
-            throw new NotImplementedException();
+            await _postRepository.DeleteAsync(postId);
         }
 
         public async Task<List<PostDto>> GetAllPosts()
         {
             var posts = await _postRepository.GetAllAsync();
+            posts = posts.Where(x => x.IsApproved); // Admin onayı olanları getir.
             return _mapper.Map<List<PostDto>>(posts);
         }
-
+        public async Task<List<PostDto>> GettAllUnApprovedPosts()
+        {
+            var posts = await _postRepository.GetAllAsync();
+            return _mapper.Map<List<PostDto>>(posts);
+        }
         public Task<List<PostDto>> GetPostByCategory(int categoryId)
         {
             throw new NotImplementedException();
         }
 
-        public Task LikePost(int postId)
+        public async Task LikePost(int postId)
         {
-            throw new NotImplementedException();
+            var post = await _postRepository.GetByIdAsync(postId);
+            post.Likes++;
+            await _postRepository.UpdateAsync(post);
         }
 
         public Task ReportPost(int postId, ComplainDto complainDto)
