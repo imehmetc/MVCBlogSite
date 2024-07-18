@@ -20,6 +20,7 @@ namespace DAL.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Complain> Complains { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
+        public DbSet<PostLike> PostLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

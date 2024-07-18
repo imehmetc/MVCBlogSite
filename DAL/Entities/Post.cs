@@ -20,5 +20,7 @@ namespace DAL.Entities
         public User User { get; set; }
         public List<Complain> Complains { get; set; }
         public List<PostCategory> PostCategories { get; set; }
+        public List<PostLike> PostLikes { get; set; }
+
     }
 }

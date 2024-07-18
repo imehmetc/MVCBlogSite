@@ -20,5 +20,6 @@ namespace DAL.Entities
         // Relational Properties
         public List<Post> Posts { get; set; }
         public List<Complain> Complains { get; set; }
+        public List<PostLike> PostLikes { get; set; }
     }
 }

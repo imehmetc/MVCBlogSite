@@ -14,5 +14,7 @@
         // Relational Properties
         public List<PostViewModel>? PostViewModels { get; set; }
         public List<ComplainViewModel>? ComplainViewModels { get; set; }
+        public List<PostLikeViewModel>? PostLikeViewModels { get; set; }
+
     }
 }

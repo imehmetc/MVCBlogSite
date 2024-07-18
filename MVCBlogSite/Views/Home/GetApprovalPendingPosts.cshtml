@@ -2,26 +2,33 @@
 @model List<PostViewModel>
 @inject AppDbContext _context;
 
-<div class="container">
-    @foreach (var item in Model)
-    {
-        <div class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="..." class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text">@item.Content</p>
-                        <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
-                        <p class="card-text">@item.Likes</p>
-                        <p class="card-text">@_context.Users.FirstOrDefault(x => x.Id == item.UserId).UserName</p>
-                        <div class="alert alert-danger">Onay Bekliyor..</div>
+@if (Model.Count > 0)
+{
+    <div class="container">
+        @foreach (var item in Model)
+        {
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="..." class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Content</p>
+                            <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
+                            <p class="card-text">@item.Likes</p>
+                            <p class="card-text">@_context.Users.FirstOrDefault(x => x.Id == item.UserId).UserName</p>
+                            <div class="alert alert-danger">Onay Bekliyor..</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    }
-</div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Onaylanmayı bekleyen bir post bulunmuyor...</div>
+}

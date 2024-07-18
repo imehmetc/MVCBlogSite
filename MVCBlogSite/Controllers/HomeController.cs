@@ -12,19 +12,21 @@ namespace MVCBlogSite.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IPostService _postService;
+        private readonly IPostLikeService _postLikeService;
         private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IPostService postService, IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostLikeService postLikeService, IMapper mapper)
         {
             _logger = logger;
             _postService = postService;
+            _postLikeService = postLikeService;
             _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
             var role = HttpContext.Session.GetString("IsAdmin");
-            
+
             if (role == "True")
             {
                 var unApprovedPosts = await _postService.GettAllUnApprovedPosts();
@@ -85,7 +87,7 @@ namespace MVCBlogSite.Controllers
             var postDtos = await _postService.GettAllUnApprovedPosts();
             postDtos = postDtos.Where(x => x.UserId == userId && !x.IsApproved).ToList();
             var mappedPosts = _mapper.Map<List<PostViewModel>>(postDtos);
-            
+
             return View(mappedPosts);
         }
 
@@ -93,16 +95,19 @@ namespace MVCBlogSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Like(int postId)
         {
-            await _postService.LikePost(postId);
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            var postLikeDtos = await _postLikeService.GetAllPostLikes();
+            var filteredPostLike = postLikeDtos.FirstOrDefault(x => x.UserId == userId && x.PostId == postId);
+            
+            if (filteredPostLike == null)
+                await _postLikeService.LikePost(userId.Value, postId);
+            else
+                await _postLikeService.UnLikePost(userId.Value, postId);
 
             return RedirectToAction("Index", "Home");
         }
-
-
-
-
-
-
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

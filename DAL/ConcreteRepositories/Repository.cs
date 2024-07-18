@@ -23,6 +23,10 @@ namespace DAL.ConcreteRepositories
         {
             return await _entities.Where(x => !x.IsDeleted).ToListAsync();
         }
+        public async Task<IEnumerable<T>> GetAllDeletedAsync()
+        {
+            return await _entities.Where(x => x.IsDeleted).ToListAsync();
+        }
 
         public async Task AddAsync(T entity)
         {
@@ -41,7 +45,17 @@ namespace DAL.ConcreteRepositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task RemoveAsync(int id)
+        {
+            var entity = await GetByIdAsync(id);
 
+            if (entity != null)
+            {
+                _entities.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+        }
+        
         public async Task<T> GetByIdAsync(int id)
         {
             return await _entities.FirstOrDefaultAsync(x => x.Id == id); // Admin göreceğinden IsDeleted filtrelemesi yapmadık.
@@ -53,5 +67,7 @@ namespace DAL.ConcreteRepositories
             _entities.Update(entity);
             await _context.SaveChangesAsync();
         }
+
+       
     }
 }

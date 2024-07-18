@@ -58,6 +58,7 @@ namespace BLL.ConcreteServices
         public async Task LikePost(int postId)
         {
             var post = await _postRepository.GetByIdAsync(postId);
+            var user = await _postRepository.GetByIdAsync(post.UserId);
             post.Likes++;
             await _postRepository.UpdateAsync(post);
         }

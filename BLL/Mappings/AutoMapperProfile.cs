@@ -17,6 +17,7 @@ namespace BLL.Mappings
             CreateMap<Post, PostDto>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Complain, ComplainDto>().ReverseMap();
+            CreateMap<PostLike, PostLikeDto>().ReverseMap();
         }
         
     }

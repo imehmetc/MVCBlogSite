@@ -19,5 +19,6 @@ namespace BLL.Dtos
         // Relational Properties
         public UserDto UserDto { get; set; }
         public List<ComplainDto> ComplainDtos { get; set; }
+        public List<PostLikeDto> PostLikeDtos { get; set; }
     }
 }

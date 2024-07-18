@@ -12,6 +12,7 @@ namespace MVCBlogSite.Mappings
             CreateMap<PostDto, PostViewModel>().ReverseMap();
             CreateMap<CategoryDto, CategoryViewModel>().ReverseMap();
             CreateMap<ComplainDto, ComplainViewModel>().ReverseMap();
+            CreateMap<PostLikeDto, PostLikeViewModel>().ReverseMap();
         }
     }
 }

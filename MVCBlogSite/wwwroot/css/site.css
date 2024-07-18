@@ -20,3 +20,29 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+}
+body{
+    background-color:#f3f3f3;
+}
+
+.navbar a::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #fff;
+    transition: .3s;
+}
+
+.navbar a:hover::before {
+    width: 100%;
+}

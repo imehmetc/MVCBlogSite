@@ -21,6 +21,7 @@ namespace MVCBlogSite
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // 
             builder.Services.AddScoped(typeof(IUserService), typeof(UserService)); // 
             builder.Services.AddScoped(typeof(IPostService), typeof(PostService)); // 
+            builder.Services.AddScoped(typeof(IPostLikeService), typeof(PostLikeService)); // 
 
             builder.Services.AddAutoMapper(typeof(MVCBlogSite.Mappings.AutoMapperProfile), typeof(BLL.Mappings.AutoMapperProfile));
 
