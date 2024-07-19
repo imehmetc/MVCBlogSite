@@ -46,15 +46,22 @@ namespace MVCBlogSite.Controllers
             if (userDto != null)
             {
                 var userViewModel = _mapper.Map<UserViewModel>(userDto);
-                
+
                 HttpContext.Session.SetInt32("UserId", userViewModel.Id);
                 HttpContext.Session.SetString("UserName", userViewModel.UserName);
                 HttpContext.Session.SetString("IsAdmin", userViewModel.IsAdmin.ToString());
-                
+
                 return RedirectToAction("Index", "Home", userViewModel);
             }
-            
+
             return View();
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Login", "Account");
         }
 
     }

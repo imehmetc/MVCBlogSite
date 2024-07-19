@@ -7,20 +7,13 @@
     var role = Context.Session.GetString("IsAdmin");
 }
 
-
-<div class="container">
+<div class="container mt-4">
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var item in Model)
         {
             <div class="col">
-                <div class="card h-100">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="180"
-                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap"
-                         preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Image</title>
-                        <rect width="100%" height="100%" fill="#868e96"></rect>
-                        <text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text>
-                    </svg>
+                <div class="card border-light shadow-sm h-100">
+                    <div class="card-img-top" style="background-image:  background-size: cover; background-position: center; height: 180px;"></div>
 
                     <div class="card-body">
                         <h5 class="card-title">@item.Title</h5>
@@ -28,40 +21,58 @@
                         <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
                     </div>
 
-                    <div class="card-footer">
+                    <div class="card-footer d-flex justify-content-between align-items-center">
                         <form asp-action="Like" method="POST" style="display:inline">
                             <input type="hidden" name="postId" value="@item.Id" />
-                            <button type="submit" class="btn btn-info"><i class="bi bi-hand-thumbs-up">@item.Likes</i></button>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-hand-thumbs-up"></i> @item.Likes
+                            </button>
                         </form>
 
-                        @if (item.UserId == loggedInUserId)
+                        @if (item.UserId == loggedInUserId || role == "True")
                         {
-                            <form asp-action="Delete" method="POST" style="display:inline">
-                                <input type="hidden" name="postId" value="@item.Id" />
-                                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                            </form>
-                        }
-                        @if (role == "True")
-                        {
-                            @if (item.IsApproved == false)
-                            {
-                                <form asp-action="Approve" method="POST" style="display:inline">
-                                    <input type="hidden" name="postId" value="@item.Id" />
-                                    <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i></button>
-                                </form>
-                            }
+                            <div class="btn-group" role="group">
+                                @if (item.UserId == loggedInUserId)
+                                {
+                                    <form asp-action="Delete" method="POST" style="display:inline">
+                                        <input type="hidden" name="postId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                }
 
-                            <form asp-action="Delete" method="POST" style="display:inline">
-                                <input type="hidden" name="postId" value="@item.Id" />
-                                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                            </form>
+                                @if (role == "True")
+                                {
+                                    @if (item.IsApproved == false)
+                                    {
+                                        <form asp-action="Approve" method="POST" style="display:inline">
+                                            <input type="hidden" name="postId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                                <i class="bi bi-check-circle"></i> Approve
+                                            </button>
+                                        </form>
+                                    }
+                                }
+                            </div>
                         }
-                        <div class="mt-2">
-                            <small class="text-muted">@_context.Users.FirstOrDefault(x => x.Id == item.UserId).UserName</small>
-                        </div>
+
+                        <small class="text-muted">@_context.Users.FirstOrDefault(x => x.Id == item.UserId)?.UserName</small>
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
+<style>
+    .card-img-top {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+</style>

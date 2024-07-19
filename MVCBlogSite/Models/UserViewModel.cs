@@ -1,4 +1,6 @@
-﻿namespace MVCBlogSite.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MVCBlogSite.Models
 {
     public class UserViewModel : BaseViewModel
     {

@@ -1,32 +1,96 @@
 ﻿@model UserViewModel
 
-<div class="container mt-5">
-    <form class="form" asp-controller="Account" asp-action="Register" method="POST">
-        <div class="form-group">
-            <label for="FirstName">First Name:</label>
-            <input asp-for="FirstName" type="text" class="form-control" id="FirstName" placeholder="First Name.." required />
-        </div>
-        <div class="form-group">
-            <label for="LastName">Last Name:</label>
-            <input asp-for="LastName" type="text" class="form-control" id="LastName" placeholder="Last Name.." required />
-        </div>
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
 
-        <div class="form-group">
-            <label for="BirthDate">Birth Date:</label>
-            <input asp-for="BirthDate" type="date" class="form-control" id="BirthDate" required />
-        </div>
+    .register-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        <div class="form-group">
-            <label for="UserName">User Name:</label>
-            <input asp-for="UserName" type="text" class="form-control" id="UserName" placeholder="User Name.." required />
-        </div>
-        <div class="form-group">
-            <label for="Password">Password:</label>
-            <input asp-for="Password" type="password" class="form-control" id="Password" placeholder="Password.." required />
-        </div>
+    .register-title {
+        margin-bottom: 30px;
+        color: #343a40;
+    }
 
-        <div class="form-group">
-            <input type="submit" value="Register" class="btn btn-success btn-block" />
-        </div>
-    </form>
+    .form-control {
+        border-radius: 20px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-register,
+    .btn-login {
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .btn-register {
+        background-color: #6c757d;
+        border: none;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+        .btn-register:hover {
+            background-color: #5a6268;
+        }
+
+    .btn-login {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        border: 1px solid #6c757d;
+    }
+
+        .btn-login:hover {
+            background-color: #e9ecef;
+            color: #5a6268;
+        }
+
+    .text-danger {
+        font-size: 0.875em;
+    }
+</style>
+
+<div class="container">
+    <div class="register-container">
+        <h2 class="register-title text-center">Register</h2>
+        <form asp-controller="Account" asp-action="Register" method="POST">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input asp-for="FirstName" type="text" class="form-control" id="firstName" placeholder="First name" required>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input asp-for="LastName" type="text" class="form-control" id="lastName" placeholder="Last name" required>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="birthDate" class="form-label">Birth Date</label>
+                <input asp-for="BirthDate" type="date" class="form-control" id="birthDate" required>
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input asp-for="UserName" type="text" class="form-control" id="username" placeholder="Username" required>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Password" required>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-register">Register</button>
+        </form>
+        <a class="btn btn-login" asp-controller="Account" asp-action="Login">Login</a>
+    </div>
 </div>
