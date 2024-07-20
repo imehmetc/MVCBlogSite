@@ -16,38 +16,10 @@
     <!-- Option 1: Include in HTML -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        nav {
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
-        }
 
-        .navbar-nav li {
-            position: relative; /* li elementini göreli konumlandır */
-        }
-
-        .navbar-nav li a {
-            position: relative; /* a elementini göreli konumlandır */
-            display: block; /* a elementinin altına çizgi eklemek için bloğa çevir */
-        }
-
-        .navbar-nav li a::before {
-            content: '';
-            position: absolute;
-            bottom: 0; /* altına yerleştir */
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: #fff;
-            transition: width .3s;
-        }
-
-        .navbar-nav li a:hover::before {
-            width: 100%;
-        }
-
-    </style>
-
+    @RenderSection("Styles", false)
 </head>
+
 <body>
 
     <header>
@@ -60,50 +32,50 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="menuler">
-                    <ul class="navbar-nav">
-                        @if (loggedInUserId != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Create">Create</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetApprovalPendingPosts">GetApprovalPendingPosts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Create</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">GetApprovalPendingPosts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                        }
-                    </ul>
+                    <div class="d-flex justify-content-between w-100">
+                        <!-- Sol menü -->
+                        <ul class="navbar-nav me-auto">
+                            @if (loggedInUserId != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Posts</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Create">Create Post</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetApprovalPendingPosts">Pending Posts</a>
+                                </li>
+                            }
+                        </ul>
 
-                    <form class="d-flex ms-auto">
-                        <input class="form-control me-2" type="search" placeholder="Search..">
-                        <button class="btn btn-outline-light">Search</button>
-                    </form>
+                        <!-- Sağ menü -->
+                        <ul class="navbar-nav ms-auto">
+                            @if (loggedInUserId != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -120,4 +92,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

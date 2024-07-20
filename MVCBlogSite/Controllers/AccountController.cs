@@ -26,6 +26,13 @@ namespace MVCBlogSite.Controllers
         {
             if (ModelState.IsValid)
             {
+                var users = await _userService.GetAllUsers();
+                var existingUser = users.FirstOrDefault(x => x.UserName == userViewModel.UserName);
+                if (existingUser != null)
+                {
+                    ViewBag.ErrorMessage = "Username already exists.";
+                    return View(userViewModel);
+                }
                 var userDto = _mapper.Map<UserDto>(userViewModel);
                 await _userService.Register(userDto);
                 return RedirectToAction("Login");
@@ -53,6 +60,8 @@ namespace MVCBlogSite.Controllers
 
                 return RedirectToAction("Index", "Home", userViewModel);
             }
+            else
+                ViewBag.ErrorMessage = "Invalid username or password.";
 
             return View();
         }
@@ -62,6 +71,22 @@ namespace MVCBlogSite.Controllers
             HttpContext.Session.Clear();
 
             return RedirectToAction("Login", "Account");
+        }
+
+        public async Task<IActionResult> Profile()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            var users = await _userService.GetAllUsers();
+
+            var user = users.FirstOrDefault(x => x.Id == userId && x.IsAdmin == false);
+            
+            if (user == null)
+                return RedirectToAction("Index", "Home");
+            
+            var mappedUser = _mapper.Map<UserViewModel>(user);
+            
+            return View(mappedUser);
         }
 
     }

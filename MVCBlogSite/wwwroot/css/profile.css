@@ -1,0 +1,30 @@
+﻿.profile-header {
+    background-color: #EEEDEB;
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.profile-photo {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.profile-info {
+    margin-top: 20px;
+}
+
+    .profile-info h4 {
+        margin-bottom: 10px;
+    }
+
+.posts, .complaints, .likes {
+    margin-top: 30px;
+}
+
+.list-group-item {
+    border: none;
+}

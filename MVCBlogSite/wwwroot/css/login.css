@@ -1,0 +1,50 @@
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.login-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+    margin-bottom: 30px;
+    color: #343a40;
+}
+
+.form-control {
+    border-radius: 20px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-custom,
+.btn-register {
+    background-color: #6c757d;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+    .btn-custom:hover {
+        background-color: #5a6268;
+    }
+
+.btn-register {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+}
+
+    .btn-register:hover {
+        background-color: #e9ecef;
+        color: #5a6268;
+    }

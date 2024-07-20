@@ -95,7 +95,6 @@ namespace MVCBlogSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Like(int postId)
         {
-
             var userId = HttpContext.Session.GetInt32("UserId");
 
             var postLikeDtos = await _postLikeService.GetAllPostLikes();

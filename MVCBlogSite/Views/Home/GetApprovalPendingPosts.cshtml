@@ -2,33 +2,38 @@
 @model List<PostViewModel>
 @inject AppDbContext _context;
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/posts.css" />
+}
+
 @if (Model.Count > 0)
 {
-    <div class="container">
-        @foreach (var item in Model)
-        {
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="..." class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
+    <div class="container mt-4">
+        <h2 class="posts-title text-center">Pending Posts</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card border-light shadow-sm h-100">
+                        <div class="card-img-top" style="background-color: #f8f9fa; background-size: cover; background-position: center; height: 180px;"></div>
+
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>
                             <p class="card-text">@item.Content</p>
-                            <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
-                            <p class="card-text">@item.Likes</p>
-                            <p class="card-text">@_context.Users.FirstOrDefault(x => x.Id == item.UserId).UserName</p>
-                            <div class="alert alert-danger">Onay Bekliyor..</div>
+                            <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <div class="alert alert-danger p-2">Onay Bekliyor..</div>
+                            <small class="text-muted">@_context.Users.FirstOrDefault(x => x.Id == item.UserId)?.UserName</small>
                         </div>
                     </div>
                 </div>
-
-            </div>
-        }
+            }
+        </div>
     </div>
 }
 else
 {
-    <div class="alert alert-warning">Onaylanmayı bekleyen bir post bulunmuyor...</div>
+    <div class="alert alert-warning mt-4">Onaylanmayı bekleyen bir post bulunmuyor...</div>
 }
