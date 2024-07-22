@@ -1,8 +1,9 @@
-using AutoMapper;
+﻿using AutoMapper;
 using BLL.AbstractServices;
 using BLL.Dtos;
 using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCBlogSite.Models;
 using System.Diagnostics;
 
@@ -37,6 +38,18 @@ namespace MVCBlogSite.Controllers
 
             var posts = await _postService.GetAllPosts();
             var mappedPost = _mapper.Map<List<PostViewModel>>(posts);
+
+            // User'ın beğendiği postları ViewBag olarak Index.cshtml'e gönderir.
+            var userId = HttpContext.Session.GetInt32("UserId").Value;
+            var userPostLikes = await _postLikeService.GetUserPostLikes(userId);
+
+            var userPostLikesSelectList = userPostLikes.Select(like => new SelectListItem
+            {
+                Value = like.PostId.ToString()
+            }).ToList();
+
+            // ViewBag'e atanması
+            ViewBag.UserPostLikes = userPostLikesSelectList;
 
             return View(mappedPost);
         }

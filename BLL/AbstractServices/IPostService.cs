@@ -14,7 +14,6 @@ namespace BLL.AbstractServices
         Task<List<PostDto>> GettAllUnApprovedPosts();
         Task DeletePost(int postId);
         Task ApprovePost(int postId);
-        Task LikePost(int postId);
         Task<List<PostDto>> GetPostByCategory(int categoryId);
         Task ReportPost(int postId, ComplainDto complainDto);
     }

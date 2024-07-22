@@ -32,10 +32,20 @@
                             <form asp-action="Like" method="POST" style="display:inline">
                                 <input type="hidden" name="postId" value="@item.Id" />
                                 <button type="submit" class="btn btn-outline-primary btn-sm me-2">
-                                    <i class="bi bi-hand-thumbs-up"></i> @item.Likes
+                                    @{
+                                        bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
+                                    }
+                                    @if (isLiked)
+                                    {
+                                        <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-hand-thumbs-up"></i> @item.Likes
+                                    }
+                                   
                                 </button>
                             </form>
-
                             @if (item.UserId == loggedInUserId || role == "True")
                             {
 
@@ -64,7 +74,12 @@
                             }
 
                         </div>
-                        <small class="text-muted">@_context.Users.FirstOrDefault(x => x.Id == item.UserId)?.UserName</small>
+
+                        @{
+                            var user = _context.Users.FirstOrDefault(x => x.Id == item.UserId);
+                        }
+
+                        <a asp-route-id="@user.Id" asp-controller="Account" asp-action="Profile" style="text-decoration:none;"><small class="text-muted"> @user.UserName </small></a>
                     </div>
                 </div>
             </div>

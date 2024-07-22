@@ -12,5 +12,6 @@ namespace BLL.AbstractServices
         Task LikePost(int userId, int postId);
         Task UnLikePost(int userId, int postId);
         Task<List<PostLikeDto>> GetAllPostLikes();
+        Task<List<PostLikeDto>> GetUserPostLikes(int userId);
     }
 }

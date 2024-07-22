@@ -31,12 +31,15 @@ namespace BLL.ConcreteServices
             var user = await _userRepository.GetByIdAsync(userId);
             var post = await _postRepository.GetByIdAsync(postId);
 
-            PostLike postLike = new PostLike();
-            postLike.Post = post;
-            postLike.User = user;
+            var postLike = _mapper.Map<PostLikeDto>(new PostLike());
+            postLike.PostDto = _mapper.Map<PostDto>(post);
+            postLike.UserDto = _mapper.Map<UserDto>(user);
+            postLike.UserId = userId;
+            postLike.PostId = postId;
+            
             post.Likes++;
 
-            await _postLikeRepository.AddAsync(postLike);
+            await _postLikeRepository.AddAsync(_mapper.Map<PostLike>(postLike));
             await _postRepository.UpdateAsync(post);
         }
 
@@ -60,6 +63,15 @@ namespace BLL.ConcreteServices
             var postLikes = await _postLikeRepository.GetAllAsync();
 
             return _mapper.Map<List<PostLikeDto>>(postLikes);
+        }
+
+        public async Task<List<PostLikeDto>> GetUserPostLikes(int userId)
+        {
+            var postLikes = await _postLikeRepository.GetAllAsync();
+            var userPostLikes = postLikes.Where(x => x.UserId == userId).ToList();
+
+            return _mapper.Map<List<PostLikeDto>>(userPostLikes);
+
         }
     }
 }

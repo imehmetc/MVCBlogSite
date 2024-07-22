@@ -73,14 +73,18 @@ namespace MVCBlogSite.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> Profile(int id)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-
             var users = await _userService.GetAllUsers();
-
-            var user = users.FirstOrDefault(x => x.Id == userId && x.IsAdmin == false);
             
+            UserDto user;
+
+            if (id != 0)
+                user = users.FirstOrDefault(x => x.Id == id && x.IsAdmin == false);
+            else
+                user = users.FirstOrDefault(x => x.Id == HttpContext.Session.GetInt32("UserId") && x.IsAdmin == false);
+
+
             if (user == null)
                 return RedirectToAction("Index", "Home");
             

@@ -67,7 +67,5 @@ namespace DAL.ConcreteRepositories
             _entities.Update(entity);
             await _context.SaveChangesAsync();
         }
-
-       
     }
 }
