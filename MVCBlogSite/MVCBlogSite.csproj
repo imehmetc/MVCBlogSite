@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Home\FilterPosts.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Home\FilterPosts.cshtml" />
     <_ContentIncludedByDefault Remove="wwwroot\css\login.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\posts.css" />
   </ItemGroup>
@@ -21,6 +26,14 @@
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Home\FilterPosts.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\FilterPosts.cshtml" />
   </ItemGroup>
 
 </Project>

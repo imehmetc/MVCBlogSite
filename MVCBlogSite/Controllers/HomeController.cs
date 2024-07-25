@@ -26,14 +26,19 @@ namespace MVCBlogSite.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var role = HttpContext.Session.GetString("IsAdmin");
-
+            
             if (role == "True")
             {
                 var unApprovedPosts = await _postService.GettAllUnApprovedPosts();
                 var allMappedPost = _mapper.Map<List<PostViewModel>>(unApprovedPosts);
+
+                var categoriesa = await _categoryService.GetAllCategories();
+                var allCategoriesa = _mapper.Map<List<CategoryViewModel>>(categoriesa);
+                ViewBag.AllCategories = allCategoriesa;
 
                 return View(allMappedPost);
             }
@@ -53,15 +58,42 @@ namespace MVCBlogSite.Controllers
             // ViewBag'e atanması
             ViewBag.UserPostLikes = userPostLikesSelectList;
 
+            var categories = await _categoryService.GetAllCategories();
+            var allCategories = _mapper.Map<List<CategoryViewModel>>(categories);
+            ViewBag.AllCategories = allCategories;
+
             return View(mappedPost);
         }
+       
+        [HttpPost]
+        public async Task<IActionResult> Index(List<int> categoryIds)
+        {
+            var allPosts = await _postService.GetPostByCategory(categoryIds);
+            var newAllPosts = _mapper.Map<List<PostViewModel>>(allPosts);
+            var categories = await _categoryService.GetAllCategories();
+            var allCategories = _mapper.Map<List<CategoryViewModel>>(categories);
+            ViewBag.AllCategories = allCategories;
 
+            // User'ın beğendiği postları ViewBag olarak Index.cshtml'e gönderir.
+            var userId = HttpContext.Session.GetInt32("UserId").Value;
+            var userPostLikes = await _postLikeService.GetUserPostLikes(userId);
+
+            var userPostLikesSelectList = userPostLikes.Select(like => new SelectListItem
+            {
+                Value = like.PostId.ToString()
+            }).ToList();
+
+            // ViewBag'e atanması
+            ViewBag.UserPostLikes = userPostLikesSelectList;
+
+            return View(newAllPosts);
+        }
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryService.GetAllCategories();
             var mappedCategories = _mapper.Map<List<CategoryViewModel>>(categories);
-            ViewBag.Categories = mappedCategories; /*new SelectList(mappedCategories, "Id", "Name");*/
+            ViewBag.Categories = mappedCategories;
 
             return View();
         }
@@ -81,15 +113,14 @@ namespace MVCBlogSite.Controllers
             await _postService.CreatePost(mappedPost);
 
             var newPost = await _postService.GettAllUnApprovedPosts();
-            var newestPost = newPost.OrderByDescending(x => x.Id).FirstOrDefault(); // 4.15
+            var newestPost = newPost.OrderByDescending(x => x.Id).FirstOrDefault();
 
             foreach (var item in categoryIds)
             {
-                await _postService.Add(new PostCategoryDto { CategoryId = item, PostId = newestPost.Id});
+                await _postService.Add(new PostCategoryDto { CategoryId = item, PostId = newestPost.Id });
             }
 
             return RedirectToAction("Index", "Home");
-
         }
 
 
@@ -214,8 +245,6 @@ namespace MVCBlogSite.Controllers
 
             return RedirectToAction("Categories");
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

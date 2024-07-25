@@ -12,101 +12,211 @@
     var role = Context.Session.GetString("IsAdmin");
 }
 
-<div class="container mt-4">
-    <h2 class="posts-title text-center">Posts</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var item in Model)
-        {
-            <div class="col">
-                <div class="card border-light shadow-sm h-100">
-                    <div class="card-img-top" style="background-image:background-size: cover; background-position: center; height: 180px;"></div>
+@if (loggedInUserId == null) // Kullanıcı giriş yapmamışsa 
+{
+    <div class="container mt-4">
+        <h2 class="posts-title text-center">Posts</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model.Take(5)) // 5 Adet post görünür.
+            {
+                <div class="col">
+                    <div class="card border-light shadow-sm h-100">
+                        <div class="card-img-top" style="background-image:background-size: cover; background-position: center; height: 180px;"></div>
 
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text">@item.Content</p>
-                        <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
-                    </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Content</p>
+                            <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
+                        </div>
 
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <div class="btn-group" role="group">
-                            @if (role != "True")
-                            {
-                                <form asp-action="Like" method="POST" style="display:inline">
-                                    <input type="hidden" name="postId" value="@item.Id" />
-                                    <button type="submit" class="btn btn-outline-primary btn-sm me-2">
-                                        @{
-                                            bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
-                                        }
-                                        @if (isLiked)
-                                        {
-                                            <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes
-                                        }
-                                        else
-                                        {
-                                            <i class="bi bi-hand-thumbs-up"></i> @item.Likes
-                                        }
-
-                                    </button>
-                                </form>
-                            }
-                            
-                            @if (item.UserId == loggedInUserId || role == "True")
-                            {
-
-                                @if (item.UserId == loggedInUserId || role == "True")
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <div class="btn-group" role="group">
+                                @if (role != "True")
                                 {
-                                    <form asp-action="Delete" method="POST" style="display:inline">
+                                    <form asp-action="Login" asp-controller="Account" method="POST" style="display:inline">
                                         <input type="hidden" name="postId" value="@item.Id" />
-                                        <button type="submit" class="btn btn-outline-danger btn-sm me-2">
-                                            <i class="bi bi-trash"></i> Delete
+                                        <button type="submit" class="btn btn-outline-primary btn-sm me-2">
+                                            @{
+                                                bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
+                                            }
+                                            @if (isLiked)
+                                            {
+                                                <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-hand-thumbs-up"></i> @item.Likes
+                                            }
+
                                         </button>
                                     </form>
                                 }
 
-                                @if (role == "True")
+                                @if (item.UserId == loggedInUserId || role == "True")
                                 {
-                                    @if (item.IsApproved == false)
+
+                                    @if (item.UserId == loggedInUserId || role == "True")
                                     {
-                                        <div class="alert alert-danger" style="font-size: 0.8em;">Henüz Onaylanmadı..</div>
+                                        <form asp-action="Delete" method="POST" style="display:inline">
+                                            <input type="hidden" name="postId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm me-2">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @if (role == "True")
+                                    {
+                                        @if (item.IsApproved == false)
+                                        {
+                                            <div class="alert alert-danger" style="font-size: 0.8em;">Henüz Onaylanmadı..</div>
+                                        }
                                     }
                                 }
-                            }
-                            @if (loggedInUserId != item.UserId)
-                            {
-                                <form asp-action="Complain" method="POST" style="display:inline">
-                                    <input type="hidden" name="postId" value="@item.Id" />
-                                    <button type="submit" class="btn btn-outline-warning btn-sm me-2">
-                                        <i class="bi bi-person-fill-exclamation"></i>
-                                    </button>
-
-                                </form>
-                                @if (@TempData["ErrorMessage"] != null && Convert.ToInt32(TempData["PostId"]) == item.Id)
+                                @if (loggedInUserId != item.UserId)
                                 {
-                                    <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">@TempData["ErrorMessage"]</div>
+                                    <form asp-action="Complain" method="POST" style="display:inline">
+                                        <input type="hidden" name="postId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-outline-warning btn-sm me-2">
+                                            <i class="bi bi-person-fill-exclamation"></i>
+                                        </button>
+
+                                    </form>
+                                    @if (@TempData["ErrorMessage"] != null && Convert.ToInt32(TempData["PostId"]) == item.Id)
+                                    {
+                                        <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">@TempData["ErrorMessage"]</div>
+                                    }
                                 }
+
+                            </div>
+
+                            @{
+                                var user = _context.Users.FirstOrDefault(x => x.Id == item.UserId);
                             }
 
+                            <a asp-route-id="@user.Id" asp-controller="Account" asp-action="Profile" style="text-decoration:none;"><small class="text-muted"> @user.UserName </small></a>
                         </div>
-
-                        @{
-                            var user = _context.Users.FirstOrDefault(x => x.Id == item.UserId);
-                        }
-
-                        <a asp-route-id="@user.Id" asp-controller="Account" asp-action="Profile" style="text-decoration:none;"><small class="text-muted"> @user.UserName </small></a>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-</div>
-
-<script>
-    window.onload = function () {
-        setTimeout(function () {
-            var alertElement = document.getElementById("errorAlert");
-            if (alertElement) {
-                alertElement.style.display = "none";
             }
-        }, 3000);
-    };
-</script>
+        </div>
+    </div>
+     
+    <!-- Kullanıcı Giriş Yapmamışsa 60 saniye sonra Login sayfasına yönlendir. -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function redirectToLogin() {
+                window.location.href = '@Url.Action("Login", "Account")';
+            }
+            setTimeout(redirectToLogin, 60000); // 60 saniye
+        });
+    </script>
+}
+else // Kullanıcı giriş yapmışsa
+{
+    <form asp-action="Index" method="POST">
+        @foreach (var item in ViewBag.AllCategories as IEnumerable<CategoryViewModel>)
+        {
+            <input type="checkbox" value="@item.GetType().GetProperty("Id").GetValue(item)" name="categoryIds" />
+
+            <!-- reflection işlemi -->
+            <p>@item.GetType().GetProperty("Name").GetValue(item)</p>
+        }
+        <button class="btn btn-primary">Send</button>
+    </form>
+
+
+    <div class="container mt-4">
+        <h2 class="posts-title text-center">Posts</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card border-light shadow-sm h-100">
+                        <div class="card-img-top" style="background-image:background-size: cover; background-position: center; height: 180px;"></div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Content</p>
+                            <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <div class="btn-group" role="group">
+                                @if (role != "True")
+                                {
+                                    <form asp-action="Like" method="POST" style="display:inline">
+                                        <input type="hidden" name="postId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-outline-primary btn-sm me-2">
+                                            @{
+                                                bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
+                                            }
+                                            @if (isLiked)
+                                            {
+                                                <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-hand-thumbs-up"></i> @item.Likes
+                                            }
+
+                                        </button>
+                                    </form>
+                                }
+
+                                @if (item.UserId == loggedInUserId || role == "True")
+                                {
+
+                                    @if (item.UserId == loggedInUserId || role == "True")
+                                    {
+                                        <form asp-action="Delete" method="POST" style="display:inline">
+                                            <input type="hidden" name="postId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm me-2">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @if (role == "True")
+                                    {
+                                        @if (item.IsApproved == false)
+                                        {
+                                            <div class="alert alert-danger" style="font-size: 0.8em;">Henüz Onaylanmadı..</div>
+                                        }
+                                    }
+                                }
+                                @if (loggedInUserId != item.UserId)
+                                {
+                                    <form asp-action="Complain" method="POST" style="display:inline">
+                                        <input type="hidden" name="postId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-outline-warning btn-sm me-2">
+                                            <i class="bi bi-person-fill-exclamation"></i>
+                                        </button>
+
+                                    </form>
+                                    @if (@TempData["ErrorMessage"] != null && Convert.ToInt32(TempData["PostId"]) == item.Id)
+                                    {
+                                        <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">@TempData["ErrorMessage"]</div>
+                                    }
+                                }
+
+                            </div>
+
+                            @{
+                                var user = _context.Users.FirstOrDefault(x => x.Id == item.UserId);
+                            }
+
+                            <a asp-route-id="@user.Id" asp-controller="Account" asp-action="Profile" style="text-decoration:none;"><small class="text-muted"> @user.UserName </small></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+}
+
+
+@section Js {
+    <link href="~/js/index.js" rel="stylesheet" />
+}

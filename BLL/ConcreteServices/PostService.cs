@@ -56,9 +56,21 @@ namespace BLL.ConcreteServices
             var posts = await _postRepository.GetAllAsync();
             return _mapper.Map<List<PostDto>>(posts);
         }
-        public Task<List<PostDto>> GetPostByCategory(int categoryId)
+        public async Task<List<PostDto>> GetPostByCategory(List<int> categoryIds)
         {
-            throw new NotImplementedException();
+            var postCategories = await _postCategoryRepository.GetAllAsync();
+
+            postCategories = postCategories.Where(x => categoryIds.Contains(x.CategoryId)).ToList();
+            
+            List<Post> allPosts = new();
+            foreach (var item in postCategories)
+            {
+                var post = await _postRepository.GetByIdAsync(item.PostId);
+                if (post != null && post.IsApproved == true)
+                    allPosts.Add(post);
+            }
+
+            return _mapper.Map<List<PostDto>>(allPosts);
         }
 
         public async Task ReportPost(int userId, int postId)
@@ -120,6 +132,14 @@ namespace BLL.ConcreteServices
         public async Task Add(PostCategoryDto postCategoryDto)
         {
             await _postCategoryRepository.AddAsync(_mapper.Map<PostCategory>(postCategoryDto));
+        }
+
+        public async Task<List<PostDto>> GetAllUnApprovedPostsFilterByUser(int userId)
+        {
+            var unApprovedPosts = await GettAllUnApprovedPosts();
+            unApprovedPosts = unApprovedPosts.Where(x => x.UserId == userId).ToList();
+
+            return unApprovedPosts;
         }
     }
 }
