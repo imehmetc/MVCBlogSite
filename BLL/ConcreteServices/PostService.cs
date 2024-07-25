@@ -15,11 +15,17 @@ namespace BLL.ConcreteServices
     {
         private readonly IRepository<Post> _postRepository;
         private readonly IMapper _mapper;
+        private readonly IRepository<Complain> _complainRepository;
+        private readonly IComplainRepository _complainRepository1;
+        private readonly IRepository<PostCategory> _postCategoryRepository;
 
-        public PostService(IRepository<Post> postRepository, IMapper mapper)
+        public PostService(IRepository<Post> postRepository, IMapper mapper, IRepository<Complain> complainRepository, IComplainRepository complainRepository1, IRepository<PostCategory> postCategoryRepository)
         {
             _postRepository = postRepository;
             _mapper = mapper;
+            _complainRepository = complainRepository;
+            _complainRepository1 = complainRepository1;
+            _postCategoryRepository = postCategoryRepository;
         }
         public async Task ApprovePost(int postId)
         {
@@ -55,9 +61,65 @@ namespace BLL.ConcreteServices
             throw new NotImplementedException();
         }
 
-        public Task ReportPost(int postId, ComplainDto complainDto)
+        public async Task ReportPost(int userId, int postId)
         {
-            throw new NotImplementedException();
+            var user = await _complainRepository.GetByIdAsync(userId);
+            var post = await _complainRepository.GetByIdAsync(postId);
+
+            var complain = _mapper.Map<ComplainDto>(new Complain());
+            complain.PostDto = _mapper.Map<PostDto>(post);
+            complain.UserDto = _mapper.Map<UserDto>(user);
+            complain.UserId = userId;
+            complain.PostId = postId;
+            complain.Title = "Şikayet Başlığı";
+            complain.Content = "Şikayet İçeriği";
+
+            await _complainRepository.AddAsync(_mapper.Map<Complain>(complain));
+        }
+
+        public async Task<bool> ComplainExists(int userId, int postId)
+        {
+            var complains = await _complainRepository.GetAllAsync();
+            var complainedPost = complains.FirstOrDefault(x => x.UserId == userId && x.PostId == postId);
+
+            if (complainedPost != null)
+                return true;
+
+            return false;
+        }
+
+
+        public async Task<List<ComplainDto>> GetComplainPosts()
+        {
+            List<Complain> allComplains = new();
+
+            var complains = await _complainRepository.GetAllAsync();
+
+            foreach (var item in complains)
+            {
+                var isHere = allComplains.Any(x => x.PostId == item.PostId);
+                if (!isHere)
+                {
+                    allComplains.Add(item);
+                }
+            }
+            var complainViewModels = _mapper.Map<List<ComplainDto>>(allComplains);
+            
+            foreach (var complain in complainViewModels)
+            {
+                complain.ComplainCount = await _complainRepository1.CountComplains(complain.PostId);
+            }
+
+            return complainViewModels;
+        }
+
+        public async Task AddRange(List<PostCategoryDto> postCategoryDto)
+        {
+            await _postCategoryRepository.AddRangeAsync(_mapper.Map<List<PostCategory>>(postCategoryDto));
+        }
+        public async Task Add(PostCategoryDto postCategoryDto)
+        {
+            await _postCategoryRepository.AddAsync(_mapper.Map<PostCategory>(postCategoryDto));
         }
     }
 }

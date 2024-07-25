@@ -1,0 +1,19 @@
+﻿@model List<CategoryViewModel>
+
+<div class="container">
+    <h2 class="text text-center"> CATEGORIES </h2>
+    <table class="table table-hover">
+        <thead>
+        <th>Name</th>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a class="btn btn-outline-primary" asp-action="CreateCategory">Create Category</a>
+</div>

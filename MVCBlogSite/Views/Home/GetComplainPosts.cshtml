@@ -1,0 +1,34 @@
+﻿@using DAL.Data
+
+@model List<ComplainViewModel>
+
+@inject AppDbContext _context
+
+<div class="container">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="..." class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <input name="id" type="hidden" value="@item.PostId" />
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Content</p>
+                        <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
+                        <p class="card-text">@_context.Posts.FirstOrDefault(x => x.Id == item.PostId).Title</p>
+                        <p class="card-text">@_context.Posts.FirstOrDefault(x => x.Id == item.PostId).Content</p>
+                        <p class="card-text">Şikayet Sayısı: @item.ComplainCount</p>
+                        <form asp-action="Delete" method="POST" style="display:inline">
+                            <input type="hidden" name="postId" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

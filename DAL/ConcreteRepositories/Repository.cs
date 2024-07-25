@@ -34,6 +34,12 @@ namespace DAL.ConcreteRepositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddRangeAsync(IEnumerable<T> entity)
+        {
+            await _entities.AddRangeAsync(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(int id)
         {
             var entity = await GetByIdAsync(id);
@@ -55,7 +61,7 @@ namespace DAL.ConcreteRepositories
                 await _context.SaveChangesAsync();
             }
         }
-        
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await _entities.FirstOrDefaultAsync(x => x.Id == id); // Admin göreceğinden IsDeleted filtrelemesi yapmadık.

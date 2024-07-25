@@ -1,5 +1,6 @@
 ﻿@{
     var loggedInUserId = Context.Session.GetInt32("UserId");
+    var role = Context.Session.GetString("IsAdmin");
 }
 
 
@@ -43,9 +44,26 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Create">Create Post</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetApprovalPendingPosts">Pending Posts</a>
-                                </li>
+                               
+                                @if (role != "True")
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetApprovalPendingPosts">Pending Posts</a>
+                                    </li>
+                                  
+                                }
+                                @if (role == "True")
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetComplainPosts">Complain Posts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Categories">Categories</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetAllApprovalPendingPosts">Tüm Onay Bekleyen Postlar</a>
+                                    </li>
+                                }
                             }
                         </ul>
 

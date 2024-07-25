@@ -13,6 +13,7 @@ namespace DAL.AbstractRepositories
         Task<IEnumerable<T>> GetAllDeletedAsync();
         Task<T> GetByIdAsync(int id);
         Task AddAsync(T entity);
+        Task AddRangeAsync(IEnumerable<T> entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
         Task RemoveAsync(int id);

@@ -1,0 +1,46 @@
+﻿@using DAL.Data
+@using Microsoft.EntityFrameworkCore
+@model List<PostViewModel>
+@inject AppDbContext _context;
+
+@{
+    var role = Context.Session.GetString("IsAdmin");
+
+}
+
+<div class="container">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="..." class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Content</p>
+                        <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
+                        <p class="card-text">@item.Likes</p>
+                        <p class="card-text">@_context.Users.FirstOrDefault(x => x.Id == item.UserId).UserName</p>
+                        @if (role == "True")
+                        {
+                            @if (item.IsApproved == false)
+                            {
+                                <form asp-action="Approve" method="POST" style="display:inline">
+                                    <input type="hidden" name="postId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i></button>
+                                </form>
+                            }
+
+                            <form asp-action="Delete" method="POST" style="display:inline">
+                                <input type="hidden" name="postId" value="@item.Id" />
+                                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

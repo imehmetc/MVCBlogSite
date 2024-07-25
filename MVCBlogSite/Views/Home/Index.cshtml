@@ -19,7 +19,7 @@
         {
             <div class="col">
                 <div class="card border-light shadow-sm h-100">
-                    <div class="card-img-top" style="background-image:  background-size: cover; background-position: center; height: 180px;"></div>
+                    <div class="card-img-top" style="background-image:background-size: cover; background-position: center; height: 180px;"></div>
 
                     <div class="card-body">
                         <h5 class="card-title">@item.Title</h5>
@@ -29,23 +29,27 @@
 
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div class="btn-group" role="group">
-                            <form asp-action="Like" method="POST" style="display:inline">
-                                <input type="hidden" name="postId" value="@item.Id" />
-                                <button type="submit" class="btn btn-outline-primary btn-sm me-2">
-                                    @{
-                                        bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
-                                    }
-                                    @if (isLiked)
-                                    {
-                                        <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes <!--a-->
-                                    }
-                                    else
-                                    {
-                                        <i class="bi bi-hand-thumbs-up"></i> @item.Likes
-                                    }
-                                   
-                                </button>
-                            </form>
+                            @if (role != "True")
+                            {
+                                <form asp-action="Like" method="POST" style="display:inline">
+                                    <input type="hidden" name="postId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm me-2">
+                                        @{
+                                            bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
+                                        }
+                                        @if (isLiked)
+                                        {
+                                            <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-hand-thumbs-up"></i> @item.Likes
+                                        }
+
+                                    </button>
+                                </form>
+                            }
+                            
                             @if (item.UserId == loggedInUserId || role == "True")
                             {
 
@@ -63,13 +67,22 @@
                                 {
                                     @if (item.IsApproved == false)
                                     {
-                                        <form asp-action="Approve" method="POST" style="display:inline">
-                                            <input type="hidden" name="postId" value="@item.Id" />
-                                            <button type="submit" class="btn btn-outline-success btn-sm me-2">
-                                                <i class="bi bi-check-circle"></i> Approve
-                                            </button>
-                                        </form>
+                                        <div class="alert alert-danger" style="font-size: 0.8em;">Henüz Onaylanmadı..</div>
                                     }
+                                }
+                            }
+                            @if (loggedInUserId != item.UserId)
+                            {
+                                <form asp-action="Complain" method="POST" style="display:inline">
+                                    <input type="hidden" name="postId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-outline-warning btn-sm me-2">
+                                        <i class="bi bi-person-fill-exclamation"></i>
+                                    </button>
+
+                                </form>
+                                @if (@TempData["ErrorMessage"] != null && Convert.ToInt32(TempData["PostId"]) == item.Id)
+                                {
+                                    <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">@TempData["ErrorMessage"]</div>
                                 }
                             }
 
@@ -86,3 +99,14 @@
         }
     </div>
 </div>
+
+<script>
+    window.onload = function () {
+        setTimeout(function () {
+            var alertElement = document.getElementById("errorAlert");
+            if (alertElement) {
+                alertElement.style.display = "none";
+            }
+        }, 3000);
+    };
+</script>

@@ -15,6 +15,11 @@ namespace BLL.AbstractServices
         Task DeletePost(int postId);
         Task ApprovePost(int postId);
         Task<List<PostDto>> GetPostByCategory(int categoryId);
-        Task ReportPost(int postId, ComplainDto complainDto);
+        Task ReportPost(int userId, int postId);
+        Task<bool> ComplainExists(int userId, int postId);
+        Task<List<ComplainDto>> GetComplainPosts();
+        //Task AddPostCategory(int postId, int categoryId);
+        Task AddRange(List<PostCategoryDto> postCategoryDto);
+        Task Add(PostCategoryDto postCategoryDto);
     }
 }
