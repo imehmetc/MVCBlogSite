@@ -4,6 +4,7 @@ using DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240726114523_photo")]
+    partial class photo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +127,7 @@ namespace DAL.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PhotoUrl")
+                    b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -264,8 +267,8 @@ namespace DAL.Migrations
                         new
                         {
                             Id = 10,
-                            BirthDate = new DateTime(2024, 7, 26, 15, 0, 17, 352, DateTimeKind.Local).AddTicks(2310),
-                            CreatedDate = new DateTime(2024, 7, 26, 15, 0, 17, 352, DateTimeKind.Local).AddTicks(2314),
+                            BirthDate = new DateTime(2024, 7, 26, 14, 45, 22, 262, DateTimeKind.Local).AddTicks(3537),
+                            CreatedDate = new DateTime(2024, 7, 26, 14, 45, 22, 262, DateTimeKind.Local).AddTicks(3539),
                             DeletedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Ali",
                             IsAdmin = true,

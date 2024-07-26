@@ -10,7 +10,7 @@ namespace BLL.Dtos
     {
         public string Title { get; set; }
         public string Content { get; set; }
-        public string? Photo { get; set; }
+        public string? PhotoUrl { get; set; }
         public bool IsApproved { get; set; } = false;
         public int Likes { get; set; }
         public int UserId { get; set; }

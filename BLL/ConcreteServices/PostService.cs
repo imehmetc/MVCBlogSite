@@ -18,14 +18,16 @@ namespace BLL.ConcreteServices
         private readonly IRepository<Complain> _complainRepository;
         private readonly IComplainRepository _complainRepository1;
         private readonly IRepository<PostCategory> _postCategoryRepository;
+        private readonly IRepository<User> _userRepository;
 
-        public PostService(IRepository<Post> postRepository, IMapper mapper, IRepository<Complain> complainRepository, IComplainRepository complainRepository1, IRepository<PostCategory> postCategoryRepository)
+        public PostService(IRepository<Post> postRepository, IMapper mapper, IRepository<Complain> complainRepository, IComplainRepository complainRepository1, IRepository<PostCategory> postCategoryRepository,IRepository<User> userRepository)
         {
             _postRepository = postRepository;
             _mapper = mapper;
             _complainRepository = complainRepository;
             _complainRepository1 = complainRepository1;
             _postCategoryRepository = postCategoryRepository;
+            _userRepository = userRepository;
         }
         public async Task ApprovePost(int postId)
         {
@@ -69,14 +71,14 @@ namespace BLL.ConcreteServices
                 if (post != null && post.IsApproved == true)
                     allPosts.Add(post);
             }
-
-            return _mapper.Map<List<PostDto>>(allPosts);
+           
+            return _mapper.Map<List<PostDto>>(allPosts.Distinct());
         }
 
         public async Task ReportPost(int userId, int postId)
         {
-            var user = await _complainRepository.GetByIdAsync(userId);
-            var post = await _complainRepository.GetByIdAsync(postId);
+            var user = await _userRepository.GetByIdAsync(userId);
+            var post = await _postRepository.GetByIdAsync(postId);
 
             var complain = _mapper.Map<ComplainDto>(new Complain());
             complain.PostDto = _mapper.Map<PostDto>(post);

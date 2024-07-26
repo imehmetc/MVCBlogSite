@@ -6,7 +6,7 @@
 
 <div class="create-container">
     <h2 class="create-title text-center">Create a New Post</h2>
-    <form asp-action="Create" method="post" class="custom-form">
+    <form asp-action="Create" method="post" class="custom-form" enctype="multipart/form-data">
         <div class="form-group">
             <label for="Title">Title</label>
             <input type="text" class="form-control" id="Title" name="Title" required />
@@ -14,6 +14,10 @@
         <div class="form-group">
             <label for="Content">Content</label>
             <textarea class="form-control" id="Content" name="Content" rows="5" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="photo" class="form-label">Photo</label>
+            <input asp-for="Photo" type="file" class="form-control" id="photo" required>
         </div>
         <div class="form-group">
             <label for="Category">Select Category/Categories</label> <br />

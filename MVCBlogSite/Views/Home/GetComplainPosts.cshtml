@@ -4,13 +4,23 @@
 
 @inject AppDbContext _context
 
+<style>
+    .profile-photo {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
 <div class="container">
     @foreach (var item in Model)
     {
         <div class="card mb-3" style="max-width: 540px;">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img src="..." class="img-fluid rounded-start" alt="...">
+                    @if (!string.IsNullOrEmpty(_context.Posts.FirstOrDefault(x => x.Id == item.PostId).PhotoUrl))
+                    {
+                        <img src="~/img/@_context.Posts.FirstOrDefault(x => x.Id == item.PostId).PhotoUrl" alt="Profile Photo" class="profile-photo" />
+                    }
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">

@@ -36,4 +36,8 @@
     <None Include="Views\Home\FilterPosts.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>

@@ -8,7 +8,7 @@ namespace BLL.Dtos
 {
     public class UserDto : BaseDto
     {
-        public string? Photo { get; set; }
+        public string? PhotoUrl { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }

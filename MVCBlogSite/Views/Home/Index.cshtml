@@ -1,4 +1,8 @@
-﻿@using DAL.Data
+﻿@{
+    Layout = "_IndexLayout";
+}
+
+@using DAL.Data
 @model List<PostViewModel>
 @inject AppDbContext _context;
 
@@ -12,7 +16,7 @@
     var role = Context.Session.GetString("IsAdmin");
 }
 
-@if (loggedInUserId == null) // Kullanıcı giriş yapmamışsa 
+@if (loggedInUserId == null) // Kullanıcı giriş yapmamışsa
 {
     <div class="container mt-4">
         <h2 class="posts-title text-center">Posts</h2>
@@ -21,7 +25,10 @@
             {
                 <div class="col">
                     <div class="card border-light shadow-sm h-100">
-                        <div class="card-img-top" style="background-image:background-size: cover; background-position: center; height: 180px;"></div>
+                        @if (!string.IsNullOrEmpty(item.PhotoUrl))
+                        {
+                            <img src="~/img/@item.PhotoUrl" alt="Profile Photo" class="profile-photo" />
+                        }
 
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>
@@ -101,7 +108,7 @@
             }
         </div>
     </div>
-     
+
     <!-- Kullanıcı Giriş Yapmamışsa 60 saniye sonra Login sayfasına yönlendir. -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -114,18 +121,6 @@
 }
 else // Kullanıcı giriş yapmışsa
 {
-    <form asp-action="Index" method="POST">
-        @foreach (var item in ViewBag.AllCategories as IEnumerable<CategoryViewModel>)
-        {
-            <input type="checkbox" value="@item.GetType().GetProperty("Id").GetValue(item)" name="categoryIds" />
-
-            <!-- reflection işlemi -->
-            <p>@item.GetType().GetProperty("Name").GetValue(item)</p>
-        }
-        <button class="btn btn-primary">Send</button>
-    </form>
-
-
     <div class="container mt-4">
         <h2 class="posts-title text-center">Posts</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -133,7 +128,10 @@ else // Kullanıcı giriş yapmışsa
             {
                 <div class="col">
                     <div class="card border-light shadow-sm h-100">
-                        <div class="card-img-top" style="background-image:background-size: cover; background-position: center; height: 180px;"></div>
+                        @if (!string.IsNullOrEmpty(item.PhotoUrl))
+                        {
+                            <img src="~/img/@item.PhotoUrl" alt="Profile Photo" class="profile-photo" />
+                        }
 
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>
@@ -211,9 +209,41 @@ else // Kullanıcı giriş yapmışsa
                     </div>
                 </div>
             }
-        </div>
-    </div>
 
+        </div>
+        <!-- Pagination -->
+        <div>
+            @{
+                var pageNumbers = Math.Ceiling((double)_context.Posts.Where(x => x.IsApproved == true).Count() / 5);
+            }
+
+            @for (int i = 1; i <= pageNumbers; i++)
+            {
+                <form>
+                    <button type="submit" asp-action="Index" name="pageNumber" id="pageNumber" value="@i">@i</button>
+                </form>
+            }
+        </div>
+
+        <div class="pagination-container">
+            <ul class="pagination text-center">
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">2</span>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </div>
+
+           
+
+    </div>
 }
 
 

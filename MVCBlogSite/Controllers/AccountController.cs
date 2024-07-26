@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BLL.AbstractServices;
 using BLL.Dtos;
+using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MVCBlogSite.Models;
 
 namespace MVCBlogSite.Controllers
@@ -24,6 +26,19 @@ namespace MVCBlogSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserViewModel userViewModel)
         {
+            if (userViewModel.Photo != null)
+            {
+                var fileName = Path.GetFileName(userViewModel.Photo.FileName);
+                var filePath = Path.Combine("wwwroot", "img", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await userViewModel.Photo.CopyToAsync(stream);
+                }
+
+                userViewModel.PhotoUrl = fileName;
+            }
+
             if (ModelState.IsValid)
             {
                 var users = await _userService.GetAllUsers();
@@ -93,5 +108,22 @@ namespace MVCBlogSite.Controllers
             return View(mappedUser);
         }
 
+        public async void DeleteImg(UserViewModel userViewModel)
+        {
+            // Bu resmi kullanan başka ürün var mı? (kendisi dışında)
+            var users = await _userService.GetAllUsers();
+            bool otherUsersExist = users.Any(x => x.PhotoUrl == userViewModel.PhotoUrl && x.Id != userViewModel.Id);
+
+            if (userViewModel.PhotoUrl != null && !otherUsersExist)
+            {
+                // O resmi klasörden sil
+
+                // O resmin tam adını (patikasıyla beraber) bulalım.
+                var file = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", userViewModel.PhotoUrl);
+
+                // Silme metoduna bu patikayı gönder
+                System.IO.File.Delete(file);
+            }
+        }
     }
 }

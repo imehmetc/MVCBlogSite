@@ -4,7 +4,8 @@ namespace MVCBlogSite.Models
 {
     public class UserViewModel : BaseViewModel
     {
-        public string? Photo { get; set; }
+        public IFormFile? Photo { get; set; }
+        public string? PhotoUrl { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }

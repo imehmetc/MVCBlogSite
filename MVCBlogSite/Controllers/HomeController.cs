@@ -27,14 +27,19 @@ namespace MVCBlogSite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5)
         {
+            var posts = await _postService.GetAllPosts();
+            posts = posts.Skip((pageNumber -1) * pageSize).Take(pageSize).ToList();
+           
             var role = HttpContext.Session.GetString("IsAdmin");
             
             if (role == "True")
             {
                 var unApprovedPosts = await _postService.GettAllUnApprovedPosts();
+                unApprovedPosts = unApprovedPosts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
                 var allMappedPost = _mapper.Map<List<PostViewModel>>(unApprovedPosts);
+
 
                 var categoriesa = await _categoryService.GetAllCategories();
                 var allCategoriesa = _mapper.Map<List<CategoryViewModel>>(categoriesa);
@@ -43,7 +48,7 @@ namespace MVCBlogSite.Controllers
                 return View(allMappedPost);
             }
 
-            var posts = await _postService.GetAllPosts();
+            
             var mappedPost = _mapper.Map<List<PostViewModel>>(posts);
 
             // User'ın beğendiği postları ViewBag olarak Index.cshtml'e gönderir.
@@ -101,6 +106,19 @@ namespace MVCBlogSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PostViewModel postViewModel, List<int> categoryIds)
         {
+            if (postViewModel.Photo != null)
+            {
+                var fileName = Path.GetFileName(postViewModel.Photo.FileName);
+                var filePath = Path.Combine("wwwroot", "img", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await postViewModel.Photo.CopyToAsync(stream);
+                }
+
+                postViewModel.PhotoUrl = fileName;
+            }
+
             var userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)

@@ -15,7 +15,12 @@
             {
                 <div class="col">
                     <div class="card border-light shadow-sm h-100">
-                        <div class="card-img-top" style="background-color: #f8f9fa; background-size: cover; background-position: center; height: 180px;"></div>
+                        <div class="card-img-top" style="background-color: #f8f9fa; background-size: cover; background-position: center; height: 180px;">
+                            @if (!string.IsNullOrEmpty(item.PhotoUrl))
+                            {
+                                <img src="~/img/@item.PhotoUrl" alt="Profile Photo" class="profile-photo" />
+                            }
+                        </div>
 
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>

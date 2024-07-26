@@ -1,14 +1,17 @@
-﻿@model UserViewModel
+﻿@using DAL.Data
+@model UserViewModel
+@inject AppDbContext _context;
 
 @section Styles {
     <link rel="stylesheet" href="~/css/profile.css" />
 }
 
+
 <div class="container">
     <div class="profile-header text-center">
-        @if (!string.IsNullOrEmpty(Model.Photo))
+        @if (!string.IsNullOrEmpty(Model.PhotoUrl))
         {
-            <img src="@Model.Photo" alt="Profile Photo" class="profile-photo" />
+            <img src="~/img/@Model.PhotoUrl" alt="Profile Photo" class="profile-photo" />
         }
         else
         {
