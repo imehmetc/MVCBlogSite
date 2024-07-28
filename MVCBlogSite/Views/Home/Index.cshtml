@@ -37,65 +37,6 @@
                         </div>
 
                         <div class="card-footer d-flex justify-content-between align-items-center">
-                            <div class="btn-group" role="group">
-                                @if (role != "True")
-                                {
-                                    <form asp-action="Login" asp-controller="Account" method="POST" style="display:inline">
-                                        <input type="hidden" name="postId" value="@item.Id" />
-                                        <button type="submit" class="btn btn-outline-primary btn-sm me-2">
-                                            @{
-                                                bool isLiked = ((IEnumerable<SelectListItem>)ViewBag.UserPostLikes).Any(like => like.Value == item.Id.ToString());
-                                            }
-                                            @if (isLiked)
-                                            {
-                                                <i class="bi bi-hand-thumbs-up-fill"></i> @item.Likes
-                                            }
-                                            else
-                                            {
-                                                <i class="bi bi-hand-thumbs-up"></i> @item.Likes
-                                            }
-
-                                        </button>
-                                    </form>
-                                }
-
-                                @if (item.UserId == loggedInUserId || role == "True")
-                                {
-
-                                    @if (item.UserId == loggedInUserId || role == "True")
-                                    {
-                                        <form asp-action="Delete" method="POST" style="display:inline">
-                                            <input type="hidden" name="postId" value="@item.Id" />
-                                            <button type="submit" class="btn btn-outline-danger btn-sm me-2">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        </form>
-                                    }
-
-                                    @if (role == "True")
-                                    {
-                                        @if (item.IsApproved == false)
-                                        {
-                                            <div class="alert alert-danger" style="font-size: 0.8em;">Henüz Onaylanmadı..</div>
-                                        }
-                                    }
-                                }
-                                @if (loggedInUserId != item.UserId)
-                                {
-                                    <form asp-action="Complain" method="POST" style="display:inline">
-                                        <input type="hidden" name="postId" value="@item.Id" />
-                                        <button type="submit" class="btn btn-outline-warning btn-sm me-2">
-                                            <i class="bi bi-person-fill-exclamation"></i>
-                                        </button>
-
-                                    </form>
-                                    @if (@TempData["ErrorMessage"] != null && Convert.ToInt32(TempData["PostId"]) == item.Id)
-                                    {
-                                        <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">@TempData["ErrorMessage"]</div>
-                                    }
-                                }
-
-                            </div>
 
                             @{
                                 var user = _context.Users.FirstOrDefault(x => x.Id == item.UserId);
@@ -128,15 +69,36 @@ else // Kullanıcı giriş yapmışsa
             {
                 <div class="col">
                     <div class="card border-light shadow-sm h-100">
-                        @if (!string.IsNullOrEmpty(item.PhotoUrl))
-                        {
-                            <img src="~/img/@item.PhotoUrl" alt="Profile Photo" class="profile-photo" />
-                        }
-
+                        <div class="card-img-top" style="background-color: #f8f9fa; background-size: cover; background-position: center; height: 180px;">
+                            @if (!string.IsNullOrEmpty(item.PhotoUrl))
+                            {
+                                <img src="~/img/@item.PhotoUrl" alt="Profile Photo" class="profile-photo" />
+                            }
+                            else
+                            {
+                                <rect width="100%" height="100%" fill="#868e96"></rect>
+                            }
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">@item.Title</h5>
-                            <p class="card-text">@item.Content</p>
-                            <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
+                            
+                            <a asp-route-id="@item.Id" asp-controller="Home" name="id" asp-action="PostDetail" style="text-decoration:none; color:black;">
+                                <h5 class="card-title">@item.Title</h5>
+                                </a>
+                            
+                                <p class="card-text">
+                                @(item.Content?.Length > 100 ? item.Content.Substring(0, 100) + "..." : item.Content)
+                            </p>
+                           
+                            <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small><br />
+                            
+                            @foreach (PostCategoryViewModel category in ViewBag.AllPostCategories)
+                            {
+                                if (category.PostId == item.Id)
+                                {
+                                    <small class="card-category-label">@category.Category.Name</small>
+                                }
+                            }
+
                         </div>
 
                         <div class="card-footer d-flex justify-content-between align-items-center">
@@ -194,7 +156,9 @@ else // Kullanıcı giriş yapmışsa
                                     </form>
                                     @if (@TempData["ErrorMessage"] != null && Convert.ToInt32(TempData["PostId"]) == item.Id)
                                     {
-                                        <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">@TempData["ErrorMessage"]</div>
+                                        <div id="errorAlert" class="alert alert-danger" style="font-size: 0.8em;">
+                                            @TempData["ErrorMessage"]
+                                        </div>
                                     }
                                 }
 
@@ -211,37 +175,44 @@ else // Kullanıcı giriş yapmışsa
             }
 
         </div>
-        <!-- Pagination -->
+
+        <!-- Pagination   -->
         <div>
             @{
-                var pageNumbers = Math.Ceiling((double)_context.Posts.Where(x => x.IsApproved == true).Count() / 5);
+                var currentPage = ViewBag.CurrentPage ?? 1; // Varsayılan olarak 1. sayfa
+                var pageNumbers = Math.Ceiling((double)_context.Posts.Where(x => x.IsApproved == true && x.IsDeleted == false).Count() / 9);
+                var nextPage = currentPage + 1;
+                var previousPage = currentPage - 1;
             }
 
-            @for (int i = 1; i <= pageNumbers; i++)
-            {
-                <form>
-                    <button type="submit" asp-action="Index" name="pageNumber" id="pageNumber" value="@i">@i</button>
-                </form>
-            }
-        </div>
+            <div class="pagination-container mt-4">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" name="pageNumber">@currentPage/@pageNumbers</a>
+                    </li>
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="/Home/Index/1?pageNumber=1" name="pageNumber"><small>« İlk</small> </a>
+                    </li>
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="/Home/Index/1?pageNumber=@previousPage" name="pageNumber"><small>←</small> </a>
+                    </li>
+                    @for (int i = 1; i <= pageNumbers; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link " asp-action="Index" asp-route-pageNumber="@i" name="pageNumber">@i</a>
+                        </li>
 
-        <div class="pagination-container">
-            <ul class="pagination text-center">
-                <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active" aria-current="page">
-                    <span class="page-link">2</span>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </div>
+                    }
+                    <li class="page-item @(currentPage == pageNumbers ? "disabled" : "") ">
+                        <a class="page-link" href="/Home/Index/1?pageNumber=@nextPage" name="pageNumber"><small>→</small> </a>
+                    </li>
+                    <li class="page-item @(currentPage == pageNumbers ? "disabled" : "")">
+                        <a class="page-link" href="/Home/Index/1?pageNumber=@pageNumbers" name="pageNumber"><small>Son »</small> </a>
+                    </li>
+                </ul>
+            </div>
 
-           
+        </div>
 
     </div>
 }

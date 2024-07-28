@@ -2,7 +2,9 @@
 using BLL.AbstractServices;
 using BLL.Dtos;
 using DAL.AbstractRepositories;
+using DAL.Data;
 using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +21,9 @@ namespace BLL.ConcreteServices
         private readonly IComplainRepository _complainRepository1;
         private readonly IRepository<PostCategory> _postCategoryRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly AppDbContext _context;
 
-        public PostService(IRepository<Post> postRepository, IMapper mapper, IRepository<Complain> complainRepository, IComplainRepository complainRepository1, IRepository<PostCategory> postCategoryRepository,IRepository<User> userRepository)
+        public PostService(IRepository<Post> postRepository, IMapper mapper, IRepository<Complain> complainRepository, IComplainRepository complainRepository1, IRepository<PostCategory> postCategoryRepository,IRepository<User> userRepository, AppDbContext context)
         {
             _postRepository = postRepository;
             _mapper = mapper;
@@ -28,6 +31,7 @@ namespace BLL.ConcreteServices
             _complainRepository1 = complainRepository1;
             _postCategoryRepository = postCategoryRepository;
             _userRepository = userRepository;
+            _context = context;
         }
         public async Task ApprovePost(int postId)
         {
@@ -45,6 +49,13 @@ namespace BLL.ConcreteServices
         public async Task DeletePost(int postId)
         {
             await _postRepository.DeleteAsync(postId);
+        }
+        public async Task UpdateViewCountAsync(int postId)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            post.ViewCount++;
+            post.ModifiedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<PostDto>> GetAllPosts()
@@ -143,5 +154,7 @@ namespace BLL.ConcreteServices
 
             return unApprovedPosts;
         }
+
+  
     }
 }

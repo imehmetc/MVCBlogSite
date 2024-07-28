@@ -13,6 +13,7 @@ namespace DAL.Entities
         public string? PhotoUrl { get; set; }
         public bool IsApproved { get; set; } = false;
         public int Likes { get; set; }
+        public int ViewCount { get; set; }
         public int UserId { get; set; }
 
 

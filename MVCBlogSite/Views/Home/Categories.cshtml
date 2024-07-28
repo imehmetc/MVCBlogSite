@@ -1,16 +1,25 @@
 ﻿@model List<CategoryViewModel>
 
-<div class="container">
+<div class="container mt-4">
     <h2 class="text text-center"> CATEGORIES </h2>
-    <table class="table table-hover">
+    <table class="table table-hover table-striped w-50">
         <thead>
         <th>Name</th>
+        <th>Delete Category</th>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
                     <td>@item.Name</td>
+                    <td>
+                        <form asp-action="DeleteCategory" method="POST" style="display:inline">
+                            <input type="hidden" name="categoryId" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm me-2">
+                                Delete <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>

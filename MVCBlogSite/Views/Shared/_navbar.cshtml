@@ -1,6 +1,7 @@
 ﻿@{
     var loggedInUserId = Context.Session.GetInt32("UserId");
     var role = Context.Session.GetString("IsAdmin");
+    var userName = Context.Session.GetString("UserName");
 }
 
 
@@ -42,7 +43,7 @@
                                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Categories">Categories</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetAllApprovalPendingPosts">Tüm Onay Bekleyen Postlar</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetAllApprovalPendingPosts">Posts Awaiting Approval</a>
                                 </li>
                             }
                         }
@@ -53,8 +54,11 @@
                         @if (loggedInUserId != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">@userName</a>
                             </li>
+                           @*  <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
+                            </li> *@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>

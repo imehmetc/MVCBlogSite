@@ -20,6 +20,16 @@
         <h1>@Model.FirstName @Model.LastName</h1>
         <p>@Model.UserName</p>
         <p><strong>Birth Date:</strong> @Model.BirthDate.ToString("dd MMMM yyyy")</p>
+
+        <!-- Fotoğraf Ekleme Formu -->
+        <form asp-action="UpdatePhoto" method="POST" enctype="multipart/form-data">
+            <div class="mb-3 ">
+                <input asp-for="Id" name="userId" hidden/>
+                <input asp-for="Photo" name="photo" type="file" class="form-control w-25" id="photo" required>
+                <button type="submit" class="btn btn-success mt-3" id="saveButton">Save</button>
+            </div>
+        </form>
+        
     </div>
 
     <div class="profile-info">
@@ -27,19 +37,32 @@
         <p>@Model.FirstName @Model.LastName's Profile Page</p>
     </div>
 
-@*     <div class="posts">
-        <h4>Paylaşımlar</h4>
-        <ul class="list-group">
-            @foreach (var post in Model.PostViewModels)
-            {
-                <li class="list-group-item">
-                    <h5>@post.Title</h5>
-                    <p>@post.Content</p>
-                    <small><i>@post.CreatedDate.ToString("dd MMMM yyyy")</i></small>
-                </li>
-            }
-        </ul>
-    </div> *@
+    @if (((List<PostViewModel>)ViewBag.UserPosts).Count > 0)
+    {
+        <div>
+            @* <h4>Posts<span class="badge bg-secondary"><small class=" ml-2">@ViewBag.UserPosts.Count</small> </span></h4> *@
+            <button type="button" class="btn btn-secondary position-relative mb-1">
+                Posts
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    @ViewBag.UserPosts.Count
+                </span>
+            </button>
+            <ul class="list-group shadow">
+                @foreach (PostViewModel post in ViewBag.UserPosts)
+                {
+                    <li class="list-group-item">
+                        <a asp-route-id="@post.Id" asp-controller="Home" name="id" asp-action="PostDetail" style="text-decoration:none; color:black;">
+                            <h5>@post.Title</h5>
+                        </a>
+                        
+                        <small><i>@post.CreatedDate.ToString("dd MMMM yyyy")</i></small>
+                        <hr />
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+   
 </div>
 
 

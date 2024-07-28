@@ -27,9 +27,6 @@
                         <input name="id" type="hidden" value="@item.PostId" />
                         <h5 class="card-title">@item.Title</h5>
                         <p class="card-text">@item.Content</p>
-                        <p class="card-text"><small class="text-muted">@item.CreatedDate.Day</small></p>
-                        <p class="card-text">@_context.Posts.FirstOrDefault(x => x.Id == item.PostId).Title</p>
-                        <p class="card-text">@_context.Posts.FirstOrDefault(x => x.Id == item.PostId).Content</p>
                         <p class="card-text">Şikayet Sayısı: @item.ComplainCount</p>
                         <form asp-action="Delete" method="POST" style="display:inline">
                             <input type="hidden" name="postId" value="@item.Id" />

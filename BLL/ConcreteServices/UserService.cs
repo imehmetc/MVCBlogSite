@@ -3,6 +3,7 @@ using BLL.AbstractServices;
 using BLL.Dtos;
 using DAL.AbstractRepositories;
 using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,13 @@ namespace BLL.ConcreteServices
     {
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
+        private readonly IRepository<Post> _postRepository;
 
-        public UserService(IRepository<User> userRepository, IMapper mapper)
+        public UserService(IRepository<User> userRepository, IMapper mapper, IRepository<Post> postRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _postRepository = postRepository;
         }
         public async Task<List<UserDto>> GetAllUsers()
         {
@@ -39,5 +42,28 @@ namespace BLL.ConcreteServices
             var user = _mapper.Map<User>(userDto);
             await _userRepository.AddAsync(user); // Repository'deki AddAsync
         }
+
+        public async Task<List<PostDto>> GetAllPostsByUserId(int userId)
+        {
+            var posts = _postRepository.GetAllWithIncludes(x => x.User);
+            var userPosts = posts.Where(x => x.UserId == userId);
+
+            var mappedPosts = _mapper.Map<List<PostDto>>(userPosts.ToList());
+
+            return mappedPosts;
+        }
+
+        public async Task Update(UserDto userDto)
+        {
+            await _userRepository.UpdateAsync(_mapper.Map<User>(userDto));
+        }
+        public async Task<UserDto> GetUserById(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            var mappedUser = _mapper.Map<UserDto>(user);
+
+            return mappedUser;
+        }
+
     }
 }

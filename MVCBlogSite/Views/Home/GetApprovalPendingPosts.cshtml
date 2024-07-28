@@ -24,13 +24,19 @@
 
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>
-                            <p class="card-text">@item.Content</p>
+                            <p class="card-text">
+                                @(item.Content?.Length > 100 ? item.Content.Substring(0, 100) + "..." : item.Content)
+                            </p>
                             <small class="text-muted">Created Date: @item.CreatedDate.ToString("dd-MM-yyyy")</small>
                         </div>
 
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <div class="alert alert-danger p-2">Onay Bekliyor..</div>
-                            <small class="text-muted">@_context.Users.FirstOrDefault(x => x.Id == item.UserId)?.UserName</small>
+                            @{
+                                var user = _context.Users.FirstOrDefault(x => x.Id == item.UserId);
+                            }
+
+                            <a asp-route-id="@user.Id" asp-controller="Account" asp-action="Profile" style="text-decoration:none;"><small class="text-muted"> @user.UserName </small></a>
                         </div>
                     </div>
                 </div>
@@ -40,5 +46,5 @@
 }
 else
 {
-    <div class="alert alert-warning mt-4">Onaylanmayı bekleyen bir post bulunmuyor...</div>
+    <div class="alert alert-warning mt-4">There are no posts pending approval...</div>
 }

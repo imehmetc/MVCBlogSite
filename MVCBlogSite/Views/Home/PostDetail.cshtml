@@ -1,0 +1,83 @@
+﻿@model PostViewModel
+
+<style>
+    .card-category-label {
+        background-color: #d3d3d3 !important; /* Daha koyu gri ton */
+        color: #333333 !important; /* Koyu gri yazı rengi */
+        padding: 8px 12px !important; /* Daha fazla boşluk */
+        border-radius: 20px !important; /* Daha yuvarlak köşeler */
+        font-size: 14px !important; /* Daha büyük yazı boyutu */
+        display: inline-block !important; /* Boyutlandırma ve boşluk için */
+        margin: 8px 0 !important; /* Üst ve alt boşluk */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Daha belirgin gölge efekti */
+        transition: background-color 0.3s ease !important; /* Geçiş efekti */
+    }
+
+        .card-category-label:hover {
+            background-color: #c0c0c0 !important; /* Hover durumunda biraz daha koyu gri */
+        }
+
+    .profile-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .content-container img {
+        display: block;
+        margin: 0 auto;
+        max-width: 40%; /* Resmi mevcut boyutun yarısına indir */
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .content-container hr {
+        border: 0;
+        height: 1px;
+        background: linear-gradient(to right, #f0f0f0, #c0c0c0, #f0f0f0);
+        margin: 20px 0;
+    }
+
+    nav {
+        display: flex;
+        justify-content: flex-end; /* Öğeleri sağa yasla */
+        align-items: center;
+        gap: 5px;
+    }
+</style>
+
+<div class="container mt-4 shadow-lg h-100 p-3" style="border-radius:10px;">
+    <h1 class="text-center">@Model.Title</h1>
+    <nav style="box-shadow:none;">
+        <i class="bi bi-hand-thumbs-up-fill"></i>@Model.Likes
+        <i class="bi bi-eye-fill"></i> @Model.ViewCount
+        @if (!string.IsNullOrEmpty(ViewBag.User.PhotoUrl))
+        {
+            <img src="~/img/@ViewBag.User.PhotoUrl" alt="Profile Photo" class="profile-photo" />
+        }
+        else
+        {
+            <i class="bi bi-person-circle"></i>
+        }
+        <a asp-route-id="@ViewBag.User.Id" asp-controller="Account" asp-action="Profile" style="text-decoration:none;"><small class="text-muted"> @ViewBag.User.UserName </small></a>
+      
+    </nav>
+    <div class="content-container mt-3 text-center">
+        @if (Model.PhotoUrl != null)
+        {
+            <img src="~/img/@Model.PhotoUrl" alt="Post Photo" />
+        }
+        <hr />
+        @Model.Content
+    </div>
+    <hr />
+    <div>
+        @foreach (PostCategoryViewModel category in ViewBag.AllPostCategories)
+        {
+            if (category.PostId == @Model.Id)
+            {
+                <small class="card-category-label">@category.Category.Name</small>
+            }
+        }
+    </div>
+</div>

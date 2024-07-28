@@ -14,5 +14,7 @@ namespace BLL.AbstractServices
         Task UpdateCategory(int categoryId);
         Task<List<CategoryDto>> GetAllCategories();
         Task<CategoryDto> GetByIdCategory(int categoryId);
+        Task<List<PostCategoryDto>> GetAllPostCategoriesByPostId(int postId);
+        Task<List<PostCategoryDto>> GetAllPostCategories();
     }
 }

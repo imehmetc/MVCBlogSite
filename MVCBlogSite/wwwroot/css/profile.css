@@ -9,8 +9,8 @@
 
 .profile-photo {
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
 }
 
 .profile-info {
@@ -27,4 +27,21 @@
 
 .list-group-item {
     border: none;
+}
+
+
+
+#saveButton {
+    padding: 10px 30px;
+    background-color: gray;
+    border-style: none;
+}
+
+    #saveButton:hover {
+        background-color: darkgray;
+    }
+
+#photo {
+    position: relative;
+    left: 40%
 }

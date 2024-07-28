@@ -16,22 +16,24 @@ namespace MVCBlogSite.Controllers
         private readonly IPostLikeService _postLikeService;
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostLikeService postLikeService, ICategoryService categoryService, IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostLikeService postLikeService, ICategoryService categoryService, IMapper mapper, IUserService userService)
         {
             _logger = logger;
             _postService = postService;
             _postLikeService = postLikeService;
             _categoryService = categoryService;
             _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
         {
+            ViewBag.CurrentPage = pageNumber;
             var posts = await _postService.GetAllPosts();
             posts = posts.Skip((pageNumber -1) * pageSize).Take(pageSize).ToList();
-           
             var role = HttpContext.Session.GetString("IsAdmin");
             
             if (role == "True")
@@ -45,27 +47,40 @@ namespace MVCBlogSite.Controllers
                 var allCategoriesa = _mapper.Map<List<CategoryViewModel>>(categoriesa);
                 ViewBag.AllCategories = allCategoriesa;
 
+                var postCategoriesAdmin = await _categoryService.GetAllPostCategories();
+                var allPostCategoriesAdmin = _mapper.Map<List<PostCategoryViewModel>>(postCategoriesAdmin);
+                ViewBag.AllPostCategories = allPostCategoriesAdmin;
+
                 return View(allMappedPost);
             }
 
             
             var mappedPost = _mapper.Map<List<PostViewModel>>(posts);
 
-            // User'ın beğendiği postları ViewBag olarak Index.cshtml'e gönderir.
-            var userId = HttpContext.Session.GetInt32("UserId").Value;
-            var userPostLikes = await _postLikeService.GetUserPostLikes(userId);
-
-            var userPostLikesSelectList = userPostLikes.Select(like => new SelectListItem
+            if(HttpContext.Session.GetInt32("UserId") != null)
             {
-                Value = like.PostId.ToString()
-            }).ToList();
+                // User'ın beğendiği postları ViewBag olarak Index.cshtml'e gönderir.
+                var userId = HttpContext.Session.GetInt32("UserId").Value;
+                var userPostLikes = await _postLikeService.GetUserPostLikes(userId);
 
-            // ViewBag'e atanması
-            ViewBag.UserPostLikes = userPostLikesSelectList;
+                var userPostLikesSelectList = userPostLikes.Select(like => new SelectListItem
+                {
+                    Value = like.PostId.ToString()
+                }).ToList();
+
+                // ViewBag'e atanması
+                ViewBag.UserPostLikes = userPostLikesSelectList;
+
+               
+            }
 
             var categories = await _categoryService.GetAllCategories();
             var allCategories = _mapper.Map<List<CategoryViewModel>>(categories);
             ViewBag.AllCategories = allCategories;
+
+            var postCategories = await _categoryService.GetAllPostCategories();
+            var allPostCategories = _mapper.Map<List<PostCategoryViewModel>>(postCategories);
+            ViewBag.AllPostCategories = allPostCategories;
 
             return View(mappedPost);
         }
@@ -90,6 +105,11 @@ namespace MVCBlogSite.Controllers
 
             // ViewBag'e atanması
             ViewBag.UserPostLikes = userPostLikesSelectList;
+
+
+            var postCategories = await _categoryService.GetAllPostCategories();
+            var allPostCategories = _mapper.Map<List<PostCategoryViewModel>>(postCategories);
+            ViewBag.AllPostCategories = allPostCategories;
 
             return View(newAllPosts);
         }
@@ -151,11 +171,41 @@ namespace MVCBlogSite.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int categoryId)
+        {
+            await _categoryService.DeleteCategory(categoryId);
+
+            return RedirectToAction("Categories", "Home");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Approve(int postId)
         {
             await _postService.ApprovePost(postId);
 
             return RedirectToAction("Index", "Home");
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PostDetail(int id)
+        {
+            var posts = await _postService.GetAllPosts();
+            var post = posts.FirstOrDefault(x => x.Id == id);
+            post.ViewCount++;
+
+            await _postService.UpdateViewCountAsync(id);
+
+            var user = await _userService.GetUserById(post.UserId);
+            ViewBag.User = user;
+
+            var postCategories = await _categoryService.GetAllPostCategories();
+            var allPostCategories = _mapper.Map<List<PostCategoryViewModel>>(postCategories);
+            ViewBag.AllPostCategories = allPostCategories;
+
+            var mappedPost = _mapper.Map<PostViewModel>(post);
+
+            return View(mappedPost);
 
         }
 

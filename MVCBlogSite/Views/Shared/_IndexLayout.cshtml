@@ -16,40 +16,6 @@
 
     @RenderSection("Styles", false)
 
-    <style>
-        .category-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-            .category-list li {
-                margin-bottom: 10px;
-            }
-
-            .category-list label {
-                display: flex;
-                align-items: center;
-                cursor: pointer;
-            }
-
-            .category-list input[type="checkbox"] {
-                margin-right: 10px;
-                accent-color: #007bff;
-            }
-
-            .category-list span {
-                font-size: 1em;
-                color: #333;
-            }
-
-            .category-list li:hover {
-                background-color: #f8f9fa;
-                border-radius: 5px;
-                transition: background-color 0.3s ease;
-            }
-
-    </style>
 
 </head>
 
@@ -64,15 +30,16 @@
                     <ul class="category-list">
                         @foreach (var item in ViewBag.AllCategories as IEnumerable<CategoryViewModel>)
                         {
-                            <li>
-                                <label>
+                            <li class="category-item">
+                                <label class="category-label">
                                     <input type="checkbox" value="@item.GetType().GetProperty("Id").GetValue(item)" name="categoryIds" />
-                                    <span>@item.GetType().GetProperty("Name").GetValue(item)</span>
+                                    <span class="category-name">@item.GetType().GetProperty("Name").GetValue(item)</span>
                                 </label>
                             </li>
                         }
                     </ul>
-                    <button class="btn btn-primary">Send</button>
+                    <button class="btn btn-primary" id="sendButton">Send</button>
+                    <a class="btn btn-success" href="/Home/Index/1?pageNumber=1" name="pageNumber" id="resetButton">Reset</a>
                 </form>
 
             </div>
@@ -80,16 +47,12 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted bg-dark">
-        <div class="container">
-            &copy; 2024 - MVCBlogSite - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @RenderSection("Js", false)
 </body>
+    @RenderSection("Js", false)
 
 </html>

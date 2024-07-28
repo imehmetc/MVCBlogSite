@@ -76,7 +76,10 @@ namespace MVCBlogSite.Controllers
                 return RedirectToAction("Index", "Home", userViewModel);
             }
             else
+            {
+                HttpContext.Session.SetInt32("UserId", 0);
                 ViewBag.ErrorMessage = "Invalid username or password.";
+            }
 
             return View();
         }
@@ -91,7 +94,7 @@ namespace MVCBlogSite.Controllers
         public async Task<IActionResult> Profile(int id)
         {
             var users = await _userService.GetAllUsers();
-            
+
             UserDto user;
 
             if (id != 0)
@@ -102,10 +105,44 @@ namespace MVCBlogSite.Controllers
 
             if (user == null)
                 return RedirectToAction("Index", "Home");
-            
+
             var mappedUser = _mapper.Map<UserViewModel>(user);
-            
+
+            // user posts
+            int userId;
+            if (id != 0)
+                userId = id;
+            else
+                userId = HttpContext.Session.GetInt32("UserId").Value;
+
+            var userPosts = await _userService.GetAllPostsByUserId(userId);
+            userPosts =  userPosts.Where(x => x.IsDeleted == false).ToList();
+            var mappedPosts = _mapper.Map<List<PostViewModel>>(userPosts);
+            ViewBag.UserPosts = mappedPosts;
+
             return View(mappedUser);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePhoto(int userId, IFormFile photo)
+        {
+            var user = await _userService.GetUserById(userId);
+            var userViewModel = _mapper.Map<UserViewModel>(user);
+            userViewModel.Photo = photo;
+
+            var fileName = Path.GetFileName(userViewModel.Photo.FileName);
+            var filePath = Path.Combine("wwwroot", "img", fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await userViewModel.Photo.CopyToAsync(stream);
+            }
+
+            userViewModel.PhotoUrl = fileName;
+
+            await _userService.Update(_mapper.Map<UserDto>(userViewModel));
+
+            return RedirectToAction("Index", "Home");
         }
 
         public async void DeleteImg(UserViewModel userViewModel)

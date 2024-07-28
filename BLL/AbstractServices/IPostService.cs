@@ -13,6 +13,7 @@ namespace BLL.AbstractServices
         Task<List<PostDto>> GetAllPosts();
         Task<List<PostDto>> GettAllUnApprovedPosts();
         Task DeletePost(int postId);
+        Task UpdateViewCountAsync(int postId);
         Task ApprovePost(int postId);
         Task<List<PostDto>> GetPostByCategory(List<int> categoryIds);
         Task ReportPost(int userId, int postId);

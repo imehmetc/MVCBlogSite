@@ -12,6 +12,9 @@ namespace BLL.AbstractServices
         Task Register(UserDto userDto);
         Task<UserDto> Login(string userName, string password);
         Task<List<UserDto>> GetAllUsers();
+        Task<List<PostDto>> GetAllPostsByUserId(int userId);
+        Task Update(UserDto userDto);
 
+        Task<UserDto> GetUserById(int id);
     }
 }

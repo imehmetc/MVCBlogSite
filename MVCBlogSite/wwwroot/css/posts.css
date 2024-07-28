@@ -1,4 +1,5 @@
-﻿.card-img-top {
+﻿
+.card-img-top {
     background-color: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
 }
@@ -16,3 +17,52 @@
     width: 100%;
     height: 100%;
 }
+
+/* Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.page-item {
+    margin: 0 1px;
+}
+
+    .page-item.active .page-link {
+        background-color: cornflowerblue; /* Aktif sayfa için yeşil arka plan */
+        border-color: cornflowerblue; /* Aktif sayfa için daha koyu yeşil sınır */
+        color: #fff; /* Aktif sayfa için beyaz renk */
+    }
+
+.page-item.disabled .page-link {
+    background-color: #6c757d; /* Devre dışı sayfalar için gri arka plan */
+    color: #fff; /* Devre dışı sayfalar için beyaz renk */
+    cursor: not-allowed; /* Devre dışı sayfalar için imleç */
+}
+
+
+.card-category-label {
+    background-color: #f0f0f0 !important; /* Açık gri ton */
+    color: #333333 !important; /* Koyu gri yazı rengi */
+    padding: 5px 7px !important; /* İçerik etrafında boşluk */
+    border-radius: 15px !important; /* Yuvarlak köşeler */
+    font-size: 10px !important; /* Daha küçük yazı boyutu */
+    display: inline-block !important; /* Boyutlandırma ve boşluk için */
+    margin: 5px 0 !important; /* Üst ve alt boşluk */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Hafif gölge efekti */
+    transition: background-color 0.3s ease !important; /* Geçiş efekti */
+}
+
+    .card-category-label:hover {
+        background-color: #e0e0e0 !important; /* Hover durumunda biraz daha koyu gri */
+    }
+
+

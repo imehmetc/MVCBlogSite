@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,7 +65,7 @@ namespace DAL.ConcreteRepositories
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _entities.FirstOrDefaultAsync(x => x.Id == id); // Admin göreceğinden IsDeleted filtrelemesi yapmadık.
+            return await _entities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id); // Admin göreceğinden IsDeleted filtrelemesi yapmadık.
         }
 
         public async Task UpdateAsync(T entity)
@@ -72,6 +73,18 @@ namespace DAL.ConcreteRepositories
             entity.ModifiedDate = DateTime.Now;
             _entities.Update(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public IQueryable<T> GetAllWithIncludes(params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _entities;
+
+            foreach (var item in includes)
+            {
+                query = query.Include(item);
+            }
+
+            return query;
         }
     }
 }

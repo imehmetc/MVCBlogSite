@@ -21,13 +21,22 @@
         </div>
         <div class="form-group">
             <label for="Category">Select Category/Categories</label> <br />
-            @foreach (var item in ViewBag.Categories)
-            {
-                <input type="checkbox" value="@item.GetType().GetProperty("Id").GetValue(item)" name="categoryIds" />
-
-                <!-- reflection işlemi -->
-                <p>@item.GetType().GetProperty("Name").GetValue(item)</p>
-            }
+            <ul class="category-list">
+                @foreach (var item in ViewBag.Categories)
+                {
+                    <li class="category-item">
+                        <label class="category-label">
+                            <input type="checkbox" value="@item.GetType().GetProperty("Id").GetValue(item)" name="categoryIds" />
+                            <span class="category-name">@item.GetType().GetProperty("Name").GetValue(item)</span>
+                        </label>
+                    </li>
+                   
+@* 
+                    <!-- reflection işlemi -->
+                    <p>@item.GetType().GetProperty("Name").GetValue(item)</p> *@
+                }
+            </ul>
+            
         </div>
         <button type="submit" class="btn btn-custom">Send</button>
     </form>

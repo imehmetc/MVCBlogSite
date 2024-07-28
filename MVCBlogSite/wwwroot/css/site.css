@@ -1,4 +1,4 @@
-html {
+﻿html {
     font-size: 14px;
 }
 
@@ -49,3 +49,69 @@ nav {
         .navbar-nav li a:hover::before {
             width: 100%;
         }
+/* Kategori liste stilini modernize etmek için */
+.category-list {
+    list-style: none; /* Madde işaretlerini kaldırır */
+    padding: 0;
+    margin: 0;
+}
+
+.category-item {
+    margin-bottom: 10px; /* Öğeler arasındaki boşluk */
+}
+
+.category-label {
+    display: flex; /* İçerikleri yatayda hizalar */
+    align-items: center; /* İçerikleri dikeyde ortalar */
+    padding: 10px;
+    background-color: #f9f9f9; /* Arka plan rengi */
+    border-radius: 5px; /* Köşeleri yuvarlatır */
+    border: 1px solid #ddd; /* Kenarlık rengi */
+    transition: background-color 0.3s, border-color 0.3s; /* Geçiş efektleri */
+    cursor: pointer; /* Üzerine gelindiğinde fare işaretçisini değiştirir */
+}
+
+    .category-label:hover {
+        background-color: #e0e0e0; /* Hover durumunda arka plan rengi */
+        border-color: #ccc; /* Hover durumunda kenarlık rengi */
+    }
+
+    .category-label input[type="checkbox"] {
+        margin-right: 10px; /* Checkbox ve metin arasındaki boşluk */
+        accent-color: #007bff; /* Checkbox rengi */
+    }
+
+.category-name {
+    font-size: 14px; /* Yazı boyutu */
+    color: #333; /* Yazı rengi */
+    font-weight: 500; /* Yazı kalınlığı */
+}
+
+#sendButton {
+    background-color: #6c757d;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 7px;
+    width: 45%;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+    #sendButton:hover {
+        background-color: #333;
+    }
+
+#resetButton {
+    background-color: #978c35;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 7px;
+    width: 45%;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+    #resetButton:hover {
+        background-color: darkkhaki;
+    }

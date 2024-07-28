@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,5 +18,6 @@ namespace DAL.AbstractRepositories
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
         Task RemoveAsync(int id);
+        IQueryable<T> GetAllWithIncludes(params Expression<Func<T, object>>[] includes);
     }
 }
